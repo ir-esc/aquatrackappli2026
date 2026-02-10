@@ -104,40 +104,21 @@ void setup() {
 const long gmtOffset_sec = 3600;      // UTC+1
 const int daylightOffset_sec = 0;  // heure d'été
 const char* ntpServer = "pool.ntp.org";
+configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+delay(2000); // Attendre que l'heure soit synchronisée
 
   server.begin();
 }
 
-// ================== LOOP ==================
-void loop() {
-
-//Photo par date choisie
-
-
-
-     // Photo par intervalle 
-
-  unsigned long tps =millis();
-    if (tps - last_photo >= interval_saisie) {
-        last_photo = tps;
-    
-        camera_fb_t* fb = esp_camera_fb_get();
-        
-    if (fb) {
-      // api
-      esp_camera_fb_return(fb);
-    }
-    }
-
-  // Photo à la demande
-  WiFiClient client = server.available();
+void PhotoOnDemand() {
+ WiFiClient client = server.available();
   if (!client) return;
 
   String request = client.readStringUntil('\r');
   client.flush();
 
  
-  if (request.indexOf("/") != -1) {
+  if (request.indexOf("/capture") != -1) {
     camera_fb_t* fb = esp_camera_fb_get();
     if (!fb) return;
 
@@ -146,8 +127,93 @@ void loop() {
     client.println("Content-Length: " + String(fb->len));
     client.println("Connection: close");
     client.println();
+    
     client.write(fb->buf, fb->len);
 
     esp_camera_fb_return(fb);
   }
 }
+
+// Fonction /time
+
+void handleTime(WiFiClient& client) {
+    struct tm timeinfo;
+    if (!getLocalTime(&timeinfo)) {
+        client.println("HTTP/1.1 500 OK");
+        client.println("Content-Type: text/plain");
+        client.println();
+        client.println("Temps non disponible");
+        return;
+    }
+
+    client.println("HTTP/1.1 200 OK");
+    client.println("Content-Type: text/plain");
+    client.println();
+    client.print("Heure ESP32 : ");
+    client.print(timeinfo.tm_hour);
+    client.print(":");
+    client.print(timeinfo.tm_min);
+    client.print(":");
+    client.println(timeinfo.tm_sec);
+}
+
+// debug client
+
+void handleClient() {
+   WiFiClient client = server.available();
+if (client) {
+    // on lit tout le buffer pour éviter de bloquer
+    String request = client.readStringUntil('\r');
+    client.flush();
+
+    // /time
+    if (request.indexOf("/time") != -1) {
+        struct tm timeinfo;
+        if (getLocalTime(&timeinfo)) {
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-Type: text/plain");
+            client.println();
+            client.printf("Heure ESP32 : %02d:%02d:%02d\n", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+        } else {
+            client.println("HTTP/1.1 500 OK");
+            client.println("Content-Type: text/plain");
+            client.println();
+            client.println("Temps non disponible");
+        }
+    }
+
+    // /capture
+    else if (request.indexOf("/capture") != -1) {
+        camera_fb_t* fb = esp_camera_fb_get();
+        if (!fb) return;
+        client.println("HTTP/1.1 200 OK");
+        client.println("Content-Type: image/jpeg");
+        client.println("Content-Length: " + String(fb->len));
+        client.println("Connection: close");
+        client.println();
+        client.write(fb->buf, fb->len);
+        esp_camera_fb_return(fb);
+    }
+
+    // fermer proprement
+    client.stop();
+}
+}
+
+
+// ================== LOOP ==================
+void loop() {
+    handleClient();
+
+    // Photo par intervalle
+    unsigned long tps = millis();
+    if (tps - last_photo >= interval_saisie) {
+        last_photo = tps;
+        camera_fb_t* fb = esp_camera_fb_get();
+        if (fb) esp_camera_fb_return(fb);
+    }
+}
+
+
+
+ 
