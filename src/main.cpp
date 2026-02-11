@@ -1,24 +1,25 @@
 #include "esp_camera.h"
 #include <WiFi.h>
+#include <HTTPClient.h>
 #include <time.h>
 #include <stdio.h>
 
-// Variables 
-unsigned long last_photo = 0; //dernière photo prise (pour intervalle)
+#define MAX_PHOTOS 20  // nombre maximum de photos à garder en mémoire
+
+// ================== VARIABLES ==================
+unsigned long last_photo = 0;
 unsigned long interval_saisie = 10000; // 10s
-
-
+int photoCounter = 0;
+String photoList[MAX_PHOTOS]; // liste des noms de photos
 
 // ================== WIFI ==================
 const char* ssid = "Redmi Note 11S";
 const char* password = "ezzzzzzz";
-
-// IP FIXE 10.106.170.89
 IPAddress local_IP(10, 106, 170, 100);
 IPAddress gateway(10, 106, 170, 89);
 IPAddress subnet(255, 255, 255, 0);
 
-// ================== CAMERA AI THINKER ==================
+// ================== CAMERA ==================
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM     0
@@ -37,183 +38,132 @@ IPAddress subnet(255, 255, 255, 0);
 #define PCLK_GPIO_NUM     22
 
 WiFiServer server(80);
+const char* photoServerURL = "http://192.168.1.100/upload";
 
-// ================== TEMPS ==================
-bool getTime(struct tm &timeinfo)
-{
-    return getLocalTime(&timeinfo);
-}
-
-struct Schedule {
-    bool days[7];        // dimanche=0 samedi=7
-    int startHour;
-    int endHour;
-    
-};
-
-
-// ================== INIT CAMERA ==================
+// ================== CAMERA INIT ==================
 void startCamera() {
-  camera_config_t config;
-  config.ledc_channel = LEDC_CHANNEL_0;
-  config.ledc_timer = LEDC_TIMER_0;
-  config.pin_d0 = Y2_GPIO_NUM;
-  config.pin_d1 = Y3_GPIO_NUM;
-  config.pin_d2 = Y4_GPIO_NUM;
-  config.pin_d3 = Y5_GPIO_NUM;
-  config.pin_d4 = Y6_GPIO_NUM;
-  config.pin_d5 = Y7_GPIO_NUM;
-  config.pin_d6 = Y8_GPIO_NUM;
-  config.pin_d7 = Y9_GPIO_NUM;
-  config.pin_xclk = XCLK_GPIO_NUM;
-  config.pin_pclk = PCLK_GPIO_NUM;
-  config.pin_vsync = VSYNC_GPIO_NUM;
-  config.pin_href = HREF_GPIO_NUM;
-  config.pin_sccb_sda = SIOD_GPIO_NUM;
-  config.pin_sccb_scl = SIOC_GPIO_NUM;
-  config.pin_pwdn = PWDN_GPIO_NUM;
-  config.pin_reset = RESET_GPIO_NUM;
-  config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;
+    camera_config_t config;
+    config.ledc_channel = LEDC_CHANNEL_0;
+    config.ledc_timer = LEDC_TIMER_0;
+    config.pin_d0 = Y2_GPIO_NUM;
+    config.pin_d1 = Y3_GPIO_NUM;
+    config.pin_d2 = Y4_GPIO_NUM;
+    config.pin_d3 = Y5_GPIO_NUM;
+    config.pin_d4 = Y6_GPIO_NUM;
+    config.pin_d5 = Y7_GPIO_NUM;
+    config.pin_d6 = Y8_GPIO_NUM;
+    config.pin_d7 = Y9_GPIO_NUM;
+    config.pin_xclk = XCLK_GPIO_NUM;
+    config.pin_pclk = PCLK_GPIO_NUM;
+    config.pin_vsync = VSYNC_GPIO_NUM;
+    config.pin_href = HREF_GPIO_NUM;
+    config.pin_sccb_sda = SIOD_GPIO_NUM;
+    config.pin_sccb_scl = SIOC_GPIO_NUM;
+    config.pin_pwdn = PWDN_GPIO_NUM;
+    config.pin_reset = RESET_GPIO_NUM;
+    config.xclk_freq_hz = 20000000;
+    config.pixel_format = PIXFORMAT_JPEG;
+    config.frame_size = FRAMESIZE_SXGA;
+    config.jpeg_quality = 12;
+    config.fb_count = 1;
 
-  config.frame_size = FRAMESIZE_SXGA;  // res 
-  config.jpeg_quality = 12;
-  config.fb_count = 1;
-
-  if (esp_camera_init(&config) != ESP_OK) {
-    while (true) { delay(1000); }
-  }
+    if (esp_camera_init(&config) != ESP_OK) {
+        while (true) { delay(1000); }
+    }
 }
+
+// ================== ENVOI PHOTO ==================
+void sendPhoto(camera_fb_t* fb, const String& photoName) {
+    if (!fb) return;
+    HTTPClient http;
+    http.begin(photoServerURL);
+    http.addHeader("Content-Type", "image/jpeg");
+    int code = http.POST(fb->buf, fb->len);
+    http.end();
+
+    // Ajouter le nom à la liste
+    photoList[photoCounter % MAX_PHOTOS] = photoName;
+    photoCounter++;
+}
+
+String getTimestamp() {
+    struct tm timeinfo;
+
+    if (!getLocalTime(&timeinfo)) {
+        // si le NTP ne marche pas encore
+        return "no_time_" + String(millis());
+    }
+
+    char buffer[30];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d_%H-%M-%S", &timeinfo);
+    return String(buffer);
+}
+
 
 // ================== SETUP ==================
 void setup() {
-  startCamera();
-// temps réel
+    Serial.begin(115200);
+    startCamera();
 
+    WiFi.config(local_IP, gateway, subnet);
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED) { delay(500); }
 
-
-  // IP fixe
-  WiFi.config(local_IP, gateway, subnet);
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-  }
-
-  // ================== TEMPS NTP ==================
-const long gmtOffset_sec = 3600;      // UTC+1
-const int daylightOffset_sec = 0;  // heure d'été
-const char* ntpServer = "pool.ntp.org";
-configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-delay(2000); // Attendre que l'heure soit synchronisée
-
-  server.begin();
+    server.begin();
 }
 
-void PhotoOnDemand() {
- WiFiClient client = server.available();
-  if (!client) return;
-
-  String request = client.readStringUntil('\r');
-  client.flush();
-
- 
-  if (request.indexOf("/capture") != -1) {
-    camera_fb_t* fb = esp_camera_fb_get();
-    if (!fb) return;
-
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: image/jpeg");
-    client.println("Content-Length: " + String(fb->len));
-    client.println("Connection: close");
-    client.println();
-    
-    client.write(fb->buf, fb->len);
-
-    esp_camera_fb_return(fb);
-  }
-}
-
-// Fonction /time
-
-void handleTime(WiFiClient& client) {
-    struct tm timeinfo;
-    if (!getLocalTime(&timeinfo)) {
-        client.println("HTTP/1.1 500 OK");
-        client.println("Content-Type: text/plain");
-        client.println();
-        client.println("Temps non disponible");
-        return;
-    }
-
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: text/plain");
-    client.println();
-    client.print("Heure ESP32 : ");
-    client.print(timeinfo.tm_hour);
-    client.print(":");
-    client.print(timeinfo.tm_min);
-    client.print(":");
-    client.println(timeinfo.tm_sec);
-}
-
-// debug client
-
+// ================== GESTION CLIENT ==================
 void handleClient() {
-   WiFiClient client = server.available();
-if (client) {
-    // on lit tout le buffer pour éviter de bloquer
-    String request = client.readStringUntil('\r');
+    WiFiClient client = server.available();
+    if (!client) return;
+
+    String request = client.readStringUntil('\n');
     client.flush();
 
-    // /time
-    if (request.indexOf("/time") != -1) {
-        struct tm timeinfo;
-        if (getLocalTime(&timeinfo)) {
-            client.println("HTTP/1.1 200 OK");
-            client.println("Content-Type: text/plain");
-            client.println();
-            client.printf("Heure ESP32 : %02d:%02d:%02d\n", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-        } else {
-            client.println("HTTP/1.1 500 OK");
-            client.println("Content-Type: text/plain");
-            client.println();
-            client.println("Temps non disponible");
+    // /photos : liste des photos
+    if (request.indexOf("/photos") != -1) {
+        client.println("HTTP/1.1 200 OK");
+        client.println("Content-Type: text/plain");
+        client.println();
+        for (int i = 0; i < MAX_PHOTOS; i++) {
+            if (photoList[i].length() > 0)
+                client.println(photoList[i]);
         }
     }
 
-    // /capture
+    // /capture : capture immédiate
     else if (request.indexOf("/capture") != -1) {
         camera_fb_t* fb = esp_camera_fb_get();
         if (!fb) return;
+
+        String photoName = "photo_" + String(photoCounter) + ".jpg";
         client.println("HTTP/1.1 200 OK");
         client.println("Content-Type: image/jpeg");
         client.println("Content-Length: " + String(fb->len));
         client.println("Connection: close");
         client.println();
         client.write(fb->buf, fb->len);
+
+        sendPhoto(fb, photoName);
         esp_camera_fb_return(fb);
     }
 
-    // fermer proprement
     client.stop();
 }
-}
-
 
 // ================== LOOP ==================
 void loop() {
     handleClient();
 
-    // Photo par intervalle
+    // Photo automatique toutes les interval_saisie
     unsigned long tps = millis();
     if (tps - last_photo >= interval_saisie) {
         last_photo = tps;
         camera_fb_t* fb = esp_camera_fb_get();
-        if (fb) esp_camera_fb_return(fb);
+        if (fb) {
+            String photoName = "photo_" + String(photoCounter) + getTimestamp() + ".jpg";
+            sendPhoto(fb, photoName);
+            esp_camera_fb_return(fb);
+        }
     }
 }
-
-
-
- 
