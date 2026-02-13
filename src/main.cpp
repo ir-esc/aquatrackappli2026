@@ -13,11 +13,11 @@ int photoCounter = 0;
 String photoList[MAX_PHOTOS]; // liste des noms de photos
 
 // ================== WIFI ==================
-const char* ssid = "Redmi Note 11S";
-const char* password = "ezzzzzzz";
-IPAddress local_IP(10, 106, 170, 100);
-IPAddress gateway(10, 106, 170, 89);
-IPAddress subnet(255, 255, 255, 0);
+const char* ssid = "Z Flip6 de ismael";
+const char* password = "12345678";
+// IPAddress local_IP(10, 106, 170, 100);
+// IPAddress gateway(10, 106, 170, 89);
+// IPAddress subnet(255, 255, 255, 0);
 
 // ================== CAMERA ==================
 #define PWDN_GPIO_NUM     32
@@ -63,8 +63,8 @@ void startCamera() {
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG;
-    config.frame_size = FRAMESIZE_SXGA;
-    config.jpeg_quality = 12;
+    config.frame_size = FRAMESIZE_SVGA;
+    config.jpeg_quality = 10;
     config.fb_count = 1;
 
     if (esp_camera_init(&config) != ESP_OK) {
@@ -105,10 +105,18 @@ void setup() {
     Serial.begin(115200);
     startCamera();
 
-    WiFi.config(local_IP, gateway, subnet);
+  //  WiFi.config(local_IP, gateway, subnet);
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) { delay(500); }
 
+    configTime(3600, 0, "pool.ntp.org");  // France hiver
+
+struct tm timeinfo;
+if (!getLocalTime(&timeinfo, 10000)) {  // timeout 10s
+    Serial.println("Echec NTP");
+} else {
+    Serial.println("NTP OK");
+}
     server.begin();
 }
 
