@@ -1,0 +1,21 @@
+/* Style général Aquatrack */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e8f4f8;
+}
+
+/* Barre de titre */
+.titre-app {
+    background-color: #0077b6;
+    color: white;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Menu latéral */
+.webix_list_item {
+    font-size: 14px;
+}
