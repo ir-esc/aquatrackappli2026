@@ -5,7 +5,7 @@ int IN1=26;
 int IN2=27;
 int CONTACTEUR=13;
 int BOUTON = 12; //pour simuler la demande de nourrissage
-int etat_moteur = 0;        // état du moteur à 0 donc à l’arrêt
+int etat_moteur = 0;        //état du moteur à 0 donc à l'arrêt
 
 void setup(){
    pinMode(IN1,OUTPUT);
@@ -19,7 +19,7 @@ void setup(){
 void loop() {
     if (etat_moteur == 0) {
         if (digitalRead(BOUTON) == LOW) {
-            etat_moteur = 1;	//marche
+            etat_moteur = 1;
             digitalWrite(ENA,HIGH);
             digitalWrite(IN1,LOW);
             digitalWrite(IN2,HIGH);
@@ -27,8 +27,8 @@ void loop() {
 }
 
     if (etat_moteur == 1) {
-        if (digitalRead(CONTACTEUR) == LOW) {
-            etat_moteur = 0;	//arrêt
+        if (digitalRead(CONTACTEUR) == LOW && digitalRead(BOUTON) == HIGH) {
+            etat_moteur = 0;
             digitalWrite(IN1,LOW);
             digitalWrite(IN2,LOW);
         }
