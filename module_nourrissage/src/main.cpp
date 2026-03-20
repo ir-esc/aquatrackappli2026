@@ -1,66 +1,30 @@
 #include <Arduino.h>
 
-int led1 = 26;
-int led2 = 27;
-
-int pwmChannel1 = 0;
-int pwmChannel2 = 1;
-int freq = 1000;
-int resolution = 8;
-
-char inChar;
+int IN1 = 26;	//La borne IN1 de la carte L298N est simuler par une led
+int IN2 = 27;	//La borne IN2 de la carte L298N est simuler par une autre led
 
 void setup() {
- pinMode(led1,OUTPUT);
- pinMode(led2,OUTPUT);
- ledcSetup(pwmChannel1, freq, resolution);
- ledcSetup(pwmChannel2, freq, resolution);
- ledcAttachPin(led1, pwmChannel);
- ledcAttachPin(led2, pwmChannel);
- Serial.begin(115200);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  Serial.begin(115200);
 }
 
-void loop(){
- if (Serial.available()){
-   inChar = Serial.read();
-   Serial.print("Character received:");
-   Serial.println(inChar);
- }
+void loop() {
+  // Sens 1
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  Serial.println("Sens 1");
+  delay(2000);
 
- if (inChar == '0'){
-   ledcWrite(pwmChannel1, 0);
- }
- if (inChar == '1'){
-   ledcWrite(pwmChannel1, 64);
- }
- if (inChar == '2'){
-   ledcWrite(pwmChannel1, 127);
- }
+  // Sens 2
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  Serial.println("Sens 2");
+  delay(2000);
 
- if (inChar == '3'){
-   ledcWrite(pwmChannel1, 191);
- }
-
- if (inChar == '4'){
-   ledcWrite(pwmChannel1, 255);
- }
- if (inChar == '5'){
-   ledcWrite(pwmChannel2, 0);
- }
-
- if (inChar == '7'){
-   ledcWrite(pwmChannel2, 64);
- }
-
- if (inChar == '6'){
-   ledcWrite(pwmChannel2, 127);
- }
-
- if (inChar == '8'){
-   ledcWrite(pwmChannel2, 191);
- }
-
- if (inChar == '9'){
-   ledcWrite(pwmChannel2, 255);
- }
+  // Arrêt
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  Serial.println("Arret");
+  delay(2000);
 }
