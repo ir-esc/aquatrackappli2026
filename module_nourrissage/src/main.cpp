@@ -1,30 +1,30 @@
 #include <Arduino.h>
 
-int IN1 = 26;	//La borne IN1 de la carte L298N est simuler par une led
-int IN2 = 27;	//La borne IN2 de la carte L298N est simuler par une autre led
+int ENA = 26;	//La borne ENA de la carte L298N est simulée par une led
+int IN1 = 27;
+
+int pwmChannel = 0;
+int freq = 1000;
+int resolution = 8;
 
 void setup() {
   pinMode(IN1, OUTPUT);
-  pinMode(IN2, OUTPUT);
+  pinMode(ENA, OUTPUT);
+  ledcSetup(pwmChannel, freq, resolution);
+  ledcAttachPin(ENA, pwmChannel);
   Serial.begin(115200);
 }
 
 void loop() {
-  // Sens 1
+  // Marche
   digitalWrite(IN1, HIGH);
-  digitalWrite(IN2, LOW);
-  Serial.println("Sens 1");
-  delay(2000);
-
-  // Sens 2
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, HIGH);
-  Serial.println("Sens 2");
-  delay(2000);
+  ledcWrite(pwmChannel, 127);
+  Serial.println("Marche");
+  delay(1000);
 
   // Arrêt
   digitalWrite(IN1, LOW);
-  digitalWrite(IN2, LOW);
+  ledcWrite(pwmChannel, 0);
   Serial.println("Arret");
-  delay(2000);
+  delay(1000);
 }
