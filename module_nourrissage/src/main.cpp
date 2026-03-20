@@ -3,23 +3,27 @@
 int ENA=25;
 int IN1=26;
 int IN2=27;
+int CONTACTEUR=13;
 
 void setup(){
    pinMode(IN1,OUTPUT);
    pinMode(IN2,OUTPUT);
    pinMode(ENA,OUTPUT);
+   pinMode(CONTACTEUR, INPUT_PULLUP);
    Serial.begin(115200);
 }
 
 void loop(){
-   digitalWrite(ENA,HIGH);// si ENA n’est pas à 1 le moteur de tourne pas
-   digitalWrite(IN1,LOW);// rotate forward
+   digitalWrite(ENA,HIGH);
+   digitalWrite(IN1,LOW); // Marche
    digitalWrite(IN2,HIGH);
-   delay(2000);
-   digitalWrite(IN1,HIGH);// rotate reverse
+   delay(1000);
+  
+   while (digitalRead(CONTACTEUR) == HIGH) {
+       // Moteur en rotation
+   }
+
+   digitalWrite(IN1,LOW); // Arrêt
    digitalWrite(IN2,LOW);
-   delay(2000);
-   digitalWrite(IN1,LOW);// stop
-   digitalWrite(IN2,LOW);
-   delay(2000);
+   delay(1000);
 }
