@@ -2,33 +2,24 @@
 
 int led1 = 26;
 int led2 = 27;
-char inChar;      //Définit une variable pour stocker les caractères reçus via le port série
+
+int pwmChannel = 0;	// Déclare le canal PWM à utiliser 
+int freq = 1000;	// Fréquence du signal PWM en Hz
+int resolution = 8;	// Résolution du PWM en bits (2^8 = 256, le PWM peut aller de 0 à 255)
 
 void setup() {
-  pinMode(led1,OUTPUT);
-  pinMode(led2,OUTPUT);
-  Serial.begin(115200);
+ pinMode(led1,OUTPUT);
+ pinMode(led2,OUTPUT);
+ ledcSetup(pwmChannel, freq, resolution);	// Configure le canal PWM avec la fréquence et la résolution
+ ledcAttachPin(led1, pwmChannel);	 // Attache la led1 au canal pwmChannel
+ ledcAttachPin(led2, pwmChannel);	// Attache la led2 au canal pwmChannel
+ Serial.begin(115200);
 }
 
-void loop() {
- if (Serial.available()){   //Juge si les données ont été reçues ou non
-   inChar = Serial.read();    //Lit un caractère
-   Serial.print("Character received:");   //Affiche "Character received:" dans le moniteur série
-   Serial.println(inChar);    //Affiche le caractère reçu dans le moniteur série
- }
- if (inChar == '1'){
-   digitalWrite(led1, HIGH);    //Lorsque le caractère '1' est reçu la led1 s'allume
- }
-
- if (inChar == '2'){
-   digitalWrite(led1, LOW);   //Lorsque le caractère '2' est reçu la led1 s'éteint
- }
-
- if (inChar == '3'){
-   digitalWrite(led2, HIGH);    //Lorsque le caractère '3' est reçu la led2 s'allume
- }
-
- if (inChar == '4'){
-   digitalWrite(led2, LOW);   //Lorsque le caractère '4' est reçu la led2 s'éteint
- }
+void loop(){
+   // Augmente progressivement la luminosité de des leds
+   for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++){
+       ledcWrite(pwmChannel, dutyCycle);
+       delay(15);
+   }
 }
