@@ -1,21 +1,39 @@
 #include <Arduino.h>
 
-int button = 13;
-int led = 26;
+int BUTTON = 13;  //Le bouton remplace le contacteur dans la simulation
+int ENA = 25;
+int IN1 = 26;
+
+int pwmChannel = 0;
+int freq = 1000;
+int resolution = 8;
 
 void setup() {
-  pinMode(button, INPUT_PULLUP);
-  pinMode(led, OUTPUT);
-  Serial.begin(115200);
+ pinMode(BUTTON, INPUT_PULLUP);
+ pinMode(IN1, OUTPUT);
+ pinMode(ENA, OUTPUT);
+ ledcSetup(pwmChannel, freq, resolution);
+ ledcAttachPin(ENA, pwmChannel);
+ Serial.begin(115200);
 }
 
 void loop() {
-  if (digitalRead(button) == LOW) {
-    digitalWrite(led, HIGH);
-    Serial.println("LED ON");
-    delay(100);
-  } else {
-    digitalWrite(led, LOW);
-    Serial.println("LED OFF");
-  }
+ // Marche
+ digitalWrite(IN1, HIGH);
+ ledcWrite(pwmChannel, 64);
+ Serial.println("Marche");
+
+ // Attente du contacteur
+ while (digitalRead(BUTTON) == HIGH) {
+   // moteur en rotation
+ }
+
+   // Contacteur déclenché
+ Serial.println("Tour détecté");
+
+ // Arrêt
+ digitalWrite(IN1, LOW);
+ ledcWrite(pwmChannel, 0);
+ Serial.println("Arrêt");
+ delay(1000);
 }
