@@ -10,10 +10,16 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(led1,HIGH);  //Allume la led1
-  digitalWrite(led2,HIGH);  //Allume la led2
-  delay(2000);    //Attendre 2 secondes
-  digitalWrite(led1,LOW);   //Éteint la led1
-  digitalWrite(led2,LOW);   //Éteint la led2
-  delay(2000);    //Attendre 2 secondes
+  digitalWrite(led1,HIGH);
+  digitalWrite(led2,LOW);
+  delay(1000);    //Attendre une seconde
+  digitalWrite(led1,HIGH);
+  digitalWrite(led2,HIGH);
+  delay(1000);    //Attendre une seconde
+  digitalWrite(led1,LOW);
+  digitalWrite(led2,HIGH);
+  delay(1000);      //Attendre une seconde
+  digitalWrite(led1,LOW);
+  digitalWrite(led2,LOW);
+  delay(1000);      //Attendre une seconde
 }
