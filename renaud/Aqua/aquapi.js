@@ -1,39 +1,23 @@
 webix.ready(function(){
+  webix.ajax()
+    .headers({"Content-Type":"application/json"})
+    .post("//aquatrackapi.ir.lan/log",JSON.stringify({"email": "Alex@ir.lan","motdepasse": "Alex1234"}));
   webix.ui({
     view: "scrollview",
     scroll: "y",
     body: {
       rows:[
-        { template:"Loading with URL", type:"header" },
         {
           view:"datatable",
           columns:[
-            { id:"package", header:"Name", fillspace:true },
-            { id:"section", header:"Section", width:120 },
-            { id:"size", header:"Size" , width:80  },
-            { id:"architecture", header:"PC", width:60  }
+            { id:"id", header:"ID", fillspace:true },
+            { id:"nom", header:"Nom", fillspace:true },
+            { id:"volume", header:"Volume", fillspace:true },
+            { id:"date", header:"Date de creation", fillspace:true }
           ],
           // loading url
           url:function(params){
-            return webix.ajax("//docs.webix.com/samples/server/packages");
-          },
-          scrollX: false
-        },
-        { template:"Loading with proxy", type:"header" },
-        {
-          view:"datatable",
-          columns:[
-            { id:"package", header:"Name", fillspace:true },
-            { id:"section", header:"Section", width:120 },
-            { id:"size", header:"Size", width:80  },
-            { id:"architecture", header:"PC", width:60  }
-          ],
-          // loading proxy
-          url:{
-            $proxy:true,
-            load:function(view, params){
-              return webix.ajax("//docs.webix.com/samples/server/packages");
-            }
+            return webix.ajax("//aquatrackapi.ir.lan/aqr");
           },
           scrollX: false
         }
