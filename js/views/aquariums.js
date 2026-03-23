@@ -37,13 +37,17 @@ function getVueAquariums() {
                         }
                     }
                 ],
-                data: []
+                 // loading url
+                 url:function(params){
+                 return webix.ajax("//aquatrackapi.ir.lan/aqr");
+                 },
             }
         ]
     };
 }
 
 function chargerAquariums() {
+    /*
     apiGetAquariums(function(err, data) {
         if (err || !data) {
             // Données de démo
@@ -56,6 +60,7 @@ function chargerAquariums() {
         $$("tableau_aquariums").clearAll();
         $$("tableau_aquariums").parse(data);
     });
+    */
 }
 
 function afficherFormulaireAquarium() {
