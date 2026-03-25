@@ -19,14 +19,18 @@ function getVueAquariums() {
                 ]
             },
             {
+                // affiche les données de l'API dans une datatable
                 view: "datatable",
                 id: "tableau_aquariums",
                 autoheight: false,
                 scroll: true,
                 columns: [
-                    { id: "nom",    header: "Nom",        fillspace: true },
-                    { id: "volume", header: "Volume (L)", width: 120 },
-                    { id: "date",   header: "Création",   width: 150 },
+                    { id:"media_id", header:"Image", width:50, template:"<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='50' height='50'>"},
+                    { id:"nom", header:"Nom", fillspace:true },
+                    { id:"user_id", header:"Propriétaire", width:90 },
+                    { id:"acces", header:"Accès", width:90 },
+                    { id:"volume", header:"Volume", width:90 },
+                    { id:"date", header:"Date de creation", width:155 }
                     {
                         id: "actions",
                         header: "Actions",
@@ -37,9 +41,9 @@ function getVueAquariums() {
                         }
                     }
                 ],
-                 // loading url
+                // récupère les données de l'API avec l'URL spécifiée
                  url:function(params){
-                 return webix.ajax("//aquatrackapi.ir.lan/aqr");
+                    return webix.ajax("//aquatrackapi.ir.lan/aqr");
                  },
             }
         ]
