@@ -8,6 +8,7 @@ webix.ready(function(){
     body: {
       rows:[
         {
+          // affiche les données de l'API dans une datatable
           view:"datatable",
           columns:[
             { id:"id", header:"ID", fillspace:true },
@@ -15,7 +16,7 @@ webix.ready(function(){
             { id:"volume", header:"Volume", fillspace:true },
             { id:"date", header:"Date de creation", fillspace:true }
           ],
-          // loading url
+          // récupère les données de l'API avec l'URL spécifiée
           url:function(params){
             return webix.ajax("//aquatrackapi.ir.lan/aqr");
           },
