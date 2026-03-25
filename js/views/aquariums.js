@@ -30,7 +30,7 @@ function getVueAquariums() {
                     { id:"user_id", header:"Propriétaire", width:90 },
                     { id:"acces", header:"Accès", width:90 },
                     { id:"volume", header:"Volume", width:90 },
-                    { id:"date", header:"Date de creation", width:155 }
+                    { id:"date", header:"Date de creation", width:155 },
                     {
                         id: "actions",
                         header: "Actions",
