@@ -16,7 +16,7 @@ webix.ready(function(){
           // affiche les données de l'API dans une datatable
           view:"datatable",
           columns:[
-            { id:"media_id", header:"Image", width:60, template:"<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='50' height='50'>"},
+            { id:"media_id", header:"Image", width:55, template:"<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='55' height='55'>"},
             { id:"nom", header:"Nom", fillspace:true },
             { id:"user_id", header:"Propriétaire", width:90 },
             { id:"acces", header:"Accès", width:90 },
