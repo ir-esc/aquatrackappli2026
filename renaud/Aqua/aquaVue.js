@@ -1,12 +1,12 @@
 webix.ready(function(){
   /* 
   envoie une requête POST à l'API pour se connecter avec les informations d'identification
-  mais ne sert à rien pour le moment car tout les aquariums sont deja affichés dans l'API sans besoin de se connecter
+  mais ne sert à rien pour le moment car tous les aquariums sont deja affichés dans l'API sans besoin de se connecter
   il faudrait ajouter une vérification de connexion pour afficher les données seulement si l'utilisateur est connecté
-  webix.ajax()
-    .headers({"Content-Type":"application/json"})
-    .post("//aquatrackapi.ir.lan/log",JSON.stringify({"email": "Alex@ir.lan","motdepasse": "Alex1234"}));
-    */
+    webix.ajax()
+      .headers({"Content-Type":"application/json"})
+      .post("//aquatrackapi.ir.lan/log",JSON.stringify({"email": "Alex@ir.lan","motdepasse": "Alex1234"}));
+  */
   webix.ui({
     view: "scrollview",
     scroll: "y",
@@ -25,7 +25,7 @@ webix.ready(function(){
           ],
           // récupère les données de l'API avec l'URL spécifiée
           url:function(params){
-            return webix.ajax("//aquatrackapi.ir.lan/aqr");
+            return webix.ajax("http://aquatrackapi.ir.lan/aqr");
           },
           scrollX: false
         }

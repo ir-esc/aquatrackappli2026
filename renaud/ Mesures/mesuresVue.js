@@ -1,57 +1,79 @@
 webix.ui({
-  id: "chart",
-  view:"chart",
-  width:600,
-  height:250,
-  type:"spline",
-  value:"#yValue#",
-  cellWidth: 50,
-  dynamic: true,
-  label: function(obj){
-    return parseInt(obj.yValue,10);
-  },
-  item:{
-    borderColor: "#1293f8",
-    color: "#ffffff"
-  },
-  line:{
-    color:"#1293f8",
-    width:3
-  },
-  xAxis:{
-    template:"#xValue#"
-  },
-  yAxis:{
-    start:0,
-    end:100,
-    step:10,
-    template:function(obj){
-      return (obj%20?"":obj)
-    }
-  },
-  series:[
-    {
-      value:"#yValue#",
-      item:{
-        borderColor: "#000000",
-        color: "#ffffff"
+  view: "scrollview",
+  scroll: "y",
+  body: {
+    // mets les mesures dans un accordéon
+    view:"accordion",
+    rows:[ 
+      {
+        view:"accordionitem",
+        header:"Température",
+        headerHeight:50, 
+        body:{
+          // affiche les données de l'API dans un graphique 
+          view:"chart",
+          id:"Température_chart",
+          height:300,
+          type:"line",
+          value:"#valeur#",
+          color:"#36abee",
+          alpha:0.8,
+          xAxis:{
+            template:"#date#"
+          },
+          yAxis:{
+            start:0,
+            end:35,
+            step:5,
+            template:function(obj){
+              return obj%5 ? "" : obj;
+            }
+          },
+          tooltip:{
+            template: "#valeur#"
+          }
+        }
       },
-      line:{
-        color:"#000000",
-        width:2
-      },
-      tooltip:{
-        template:"#yValue#"
+      {
+        view:"accordionitem",
+        header:"Acidité",
+        headerHeight:50, 
+        body:{
+          // affiche les données de l'API dans un graphique
+          view:"chart",
+          id:"Acidité_chart",
+          height:300,
+          type:"line",
+          value:"#valeur#",
+          color:"#36abee",
+          alpha:0.8,
+          xAxis:{
+            template:"#date#"
+          },
+          yAxis:{
+            start:0,
+            end:14,
+            step:1,
+            template:function(obj){
+              return obj%7 ? "" : obj;
+            }
+          },
+          tooltip:{
+            template: "#valeur#"
+          }
+        }
       }
-    }
-  ]
+    ]  
+  }
 });
 
-var count = 1;
-$$("chart").add({xValue: count, yValue: Math.random() * 100});
-setInterval(function () {
-  if(count < 100){
-    count++;
-    $$("chart").add({xValue: count, yValue: Math.random() * 100});
-  }
-}, 1000);
+// récupère les données de l'API avec l'URL spécifiée seulement pour l'aquarium TEST-A (116)
+webix.ajax("http://aquatrackapi.ir.lan/aqr/116/ppc").then(function(data){
+   const items = data.json();
+   // filtre les données pour par rapport au type de mesure
+   const temperatureItems = items.filter(function(item){ return item.type_id == 1; });
+   const aciditeItems = items.filter(function(item){ return item.type_id == 2; });
+
+   $$('Température_chart').parse(temperatureItems);
+   $$('Acidité_chart').parse(aciditeItems);
+});
