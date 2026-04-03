@@ -25,7 +25,7 @@ webix.ready(function(){
           ],
           // récupère les données de l'API avec l'URL spécifiée
           url:function(params){
-            return webix.ajax("http://aquatrackapi.ir.lan/aqr");
+            return webix.ajax("https://aquatrackapi.ir.lan/aqr");
           },
           scrollX: false
         }

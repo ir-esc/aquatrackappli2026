@@ -242,7 +242,7 @@ webix.ui({
 });
 
 // récupère les données de l'API avec l'URL spécifiée seulement pour l'aquarium TEST-A (116)
-webix.ajax("http://aquatrackapi.ir.lan/aqr/116/ppc").then(function(data){
+webix.ajax("https://aquatrackapi.ir.lan/aqr/116/ppc").then(function(data){
   const items = data.json();
   // filtre les données pour par rapport au type de mesure
   const temperatureItems = items.filter(function(item){ return item.type_id == 1; });
