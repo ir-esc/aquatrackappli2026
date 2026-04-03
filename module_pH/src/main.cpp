@@ -1,35 +1,56 @@
-#include <Arduino.h>
-#include <WiFi.h>
+#include "DFRobot_ESP_PH.h"
+#include <EEPROM.h>
 
-const char* ssid = "IR";
-const char* password = "G00dWave$";
+#define ESPADC      4096.0
+#define ESPVOLTAGE  3300
+#define PH_PIN      34
+#define INTERVAL_MS 1000
+
+
+DFRobot_ESP_PH ph;
+
+float voltage  = 0.0;
+float phValue  = 0.0;
+float temperature = 25.0;
+
 
 void setup() {
     Serial.begin(115200);
-    delay(1000);
+    while (!Serial) { ; }
 
-    Serial.print("Connexion au WiFi ");
-    Serial.println(ssid);
+    EEPROM.begin(32);
+    ph.begin();
 
-    WiFi.begin(ssid, password);
-
-
-    int retry = 0;
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(1000);
-        Serial.print(".");
-        retry++;
-        if(retry > 20){
-            Serial.println("\nImpossible de se connecter au WiFi.");
-            return;
-        }
-    }
-
-    Serial.println("\nConnecté !");
-    Serial.print("Adresse IP : ");
-    Serial.println(WiFi.localIP());
+    Serial.println("Température fixée à 25.0 °C (test)");
+    Serial.println("Envoyez 'ENTERPH' pour démarrer la calibration");
+    Serial.println("------------------------------------\n");
 }
+
 
 void loop() {
+    static unsigned long lastTime = millis();
 
+    if (millis() - lastTime >= INTERVAL_MS) {
+        lastTime = millis();
+
+        voltage = analogRead(PH_PIN) / ESPADC * ESPVOLTAGE;
+
+        phValue = ph.readPH(voltage, temperature);
+
+        Serial.println("------------------------------------");
+        Serial.print("Tension    : ");
+        Serial.print(voltage, 2);
+        Serial.println(" mV");
+
+        Serial.print("Température: ");
+        Serial.print(temperature, 1);
+        Serial.println(" °C (fixe)");
+
+        Serial.print("pH         : ");
+        Serial.println(phValue, 2);
+    }
+
+    ph.calibration(voltage, temperature);
 }
+
+
