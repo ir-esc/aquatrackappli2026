@@ -13,21 +13,18 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Température_chart",
-          height:300,
+          height:500,
           type:"line",
           value:"#valeur#",
-          color:"#36abee",
-          alpha:0.8,
           xAxis:{
-            template:"#date#"
+            template:"#date#",
+            title:"Date"
           },
           yAxis:{
-            start:0,
-            end:35,
+            title:"°C",
+            start:5,
+            end:30,
             step:5,
-            template:function(obj){
-              return obj%5 ? "" : obj;
-            }
           },
           tooltip:{
             template: "#valeur#"
@@ -42,15 +39,15 @@ webix.ui({
           // affiche les données de l'API dans un graphique
           view:"chart",
           id:"Acidité_chart",
-          height:300,
+          height:500,
           type:"line",
           value:"#valeur#",
-          color:"#36abee",
-          alpha:0.8,
           xAxis:{
-            template:"#date#"
+            template:"#date#",
+            title:"Date"
           },
           yAxis:{
+            title:"pH",
             start:0,
             end:14,
             step:1,
@@ -71,20 +68,20 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Dureté carbonatée_chart",
-          height:300,
+          height:500,
           type:"line",
           value:"#valeur#",
-          color:"#36abee",
-          alpha:0.8,
           xAxis:{
-            template:"#date#"
+            template:"#date#",
+            title:"Date"
           },
           yAxis:{
+            title:"KH",
             start:0,
-            end:35,
-            step:5,
+            end:12,
+            step:2,
             template:function(obj){
-              return obj%5 ? "" : obj;
+              return obj%6 ? "" : obj;
             }
           },
           tooltip:{
@@ -100,20 +97,20 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Dureté totale_chart",
-          height:300,
+          height:500,
           type:"line",
           value:"#valeur#",
-          color:"#36abee",
-          alpha:0.8,
           xAxis:{
-            template:"#date#"
+            template:"#date#",
+            title:"Date"
           },
           yAxis:{
+            title:"GH",
             start:0,
-            end:35,
-            step:5,
+            end:18,
+            step:3,
             template:function(obj){
-              return obj%5 ? "" : obj;
+              return obj%6 ? "" : obj;
             }
           },
           tooltip:{
@@ -129,21 +126,18 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Concentration en nitrites_chart",
-          height:300,
+          height:500,
           type:"line",
           value:"#valeur#",
-          color:"#36abee",
-          alpha:0.8,
           xAxis:{
-            template:"#date#"
+            template:"#date#",
+            title:"Date"
           },
           yAxis:{
+            title:"mg/L",
             start:0,
-            end:35,
-            step:5,
-            template:function(obj){
-              return obj%5 ? "" : obj;
-            }
+            end:1,
+            step:0.1,
           },
           tooltip:{
             template: "#valeur#"
@@ -158,20 +152,20 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Concentration en nitrates_chart",
-          height:300,
+          height:500,
           type:"line",
           value:"#valeur#",
-          color:"#36abee",
-          alpha:0.8,
           xAxis:{
-            template:"#date#"
+            template:"#date#",
+            title:"Date"
           },
           yAxis:{
+            title:"mg/L",
             start:0,
-            end:35,
+            end:50,
             step:5,
             template:function(obj){
-              return obj%5 ? "" : obj;
+              return obj%10 ? "" : obj;
             }
           },
           tooltip:{
@@ -187,21 +181,18 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Concentration en ammoniac_chart",
-          height:300,
+          height:500,
           type:"line",
           value:"#valeur#",
-          color:"#36abee",
-          alpha:0.8,
           xAxis:{
-            template:"#date#"
+            template:"#date#",
+            title:"Date"
           },
           yAxis:{
+            title:"mg/L",
             start:0,
-            end:35,
-            step:5,
-            template:function(obj){
-              return obj%5 ? "" : obj;
-            }
+            end:0.5,
+            step:0.05,
           },
           tooltip:{
             template: "#valeur#"
@@ -216,20 +207,20 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Conductivité_chart",
-          height:300,
+          height:500,
           type:"line",
           value:"#valeur#",
-          color:"#36abee",
-          alpha:0.8,
           xAxis:{
-            template:"#date#"
+            template:"#date#",
+            title:"Date"
           },
           yAxis:{
+            title:"uS/cm",
             start:0,
-            end:35,
-            step:5,
+            end:2000,
+            step:100,
             template:function(obj){
-              return obj%5 ? "" : obj;
+              return obj%200 ? "" : obj;
             }
           },
           tooltip:{
@@ -244,7 +235,7 @@ webix.ui({
 // récupère les données de l'API avec l'URL spécifiée seulement pour l'aquarium TEST-A (116)
 webix.ajax("https://aquatrackapi.ir.lan/aqr/116/ppc").then(function(data){
   const items = data.json();
-  // filtre les données pour par rapport au type de mesure
+  // filtre les données par rapport au type de mesure
   const temperatureItems = items.filter(function(item){ return item.type_id == 1; });
   const aciditeItems = items.filter(function(item){ return item.type_id == 2; });
   const dureteCarbonateeItems = items.filter(function(item){ return item.type_id == 3; });

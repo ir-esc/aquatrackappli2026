@@ -18,6 +18,7 @@ webix.ready(function(){
           columns:[
             { id:"media_id", header:"Image", width:55, template:"<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='55' height='55'>"},
             { id:"nom", header:"Nom", fillspace:true },
+            // mettre oui ou non par rapport à l'id de l'utilisateur connecté (pas fait pour le moment)
             { id:"user_id", header:"Propriétaire", width:90 },
             { id:"acces", header:"Accès", width:90 },
             { id:"volume", header:"Volume", width:90 },
