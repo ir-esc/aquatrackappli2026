@@ -13,7 +13,7 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Température_chart",
-          height:500,
+          height:400,
           type:"line",
           value:"#valeur#",
           xAxis:{
@@ -39,7 +39,7 @@ webix.ui({
           // affiche les données de l'API dans un graphique
           view:"chart",
           id:"Acidité_chart",
-          height:500,
+          height:400,
           type:"line",
           value:"#valeur#",
           xAxis:{
@@ -68,7 +68,7 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Dureté carbonatée_chart",
-          height:500,
+          height:400,
           type:"line",
           value:"#valeur#",
           xAxis:{
@@ -97,7 +97,7 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Dureté totale_chart",
-          height:500,
+          height:400,
           type:"line",
           value:"#valeur#",
           xAxis:{
@@ -126,7 +126,7 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Concentration en nitrites_chart",
-          height:500,
+          height:400,
           type:"line",
           value:"#valeur#",
           xAxis:{
@@ -152,7 +152,7 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Concentration en nitrates_chart",
-          height:500,
+          height:400,
           type:"line",
           value:"#valeur#",
           xAxis:{
@@ -181,7 +181,7 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Concentration en ammoniac_chart",
-          height:500,
+          height:400,
           type:"line",
           value:"#valeur#",
           xAxis:{
@@ -207,7 +207,7 @@ webix.ui({
           // affiche les données de l'API dans un graphique 
           view:"chart",
           id:"Conductivité_chart",
-          height:500,
+          height:400,
           type:"line",
           value:"#valeur#",
           xAxis:{
