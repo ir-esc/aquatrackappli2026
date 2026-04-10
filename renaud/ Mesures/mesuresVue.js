@@ -5,7 +5,8 @@ webix.ui({
       {
         view:"accordionitem",
         header:"Température",
-        headerHeight:50, 
+        headerHeight:50,
+        collapsed: true,
         body:{
           // affiche les données de l'API dans un graphique 
           view:"chart",
@@ -31,7 +32,8 @@ webix.ui({
       {
         view:"accordionitem",
         header:"Acidité",
-        headerHeight:50, 
+        headerHeight:50,
+        collapsed: true,
         body:{
           // affiche les données de l'API dans un graphique
           view:"chart",
@@ -60,7 +62,8 @@ webix.ui({
       {
         view:"accordionitem",
         header:"Dureté carbonatée",
-        headerHeight:50, 
+        headerHeight:50,
+        collapsed: true,
         body:{
           // affiche les données de l'API dans un graphique 
           view:"chart",
@@ -89,7 +92,8 @@ webix.ui({
       {
         view:"accordionitem",
         header:"Dureté totale",
-        headerHeight:50, 
+        headerHeight:50,
+        collapsed: true,
         body:{
           // affiche les données de l'API dans un graphique 
           view:"chart",
@@ -118,7 +122,8 @@ webix.ui({
       {
         view:"accordionitem",
         header:"Concentration en nitrites",
-        headerHeight:50, 
+        headerHeight:50,
+        collapsed: true,
         body:{
           // affiche les données de l'API dans un graphique 
           view:"chart",
@@ -144,7 +149,8 @@ webix.ui({
       {
         view:"accordionitem",
         header:"Concentration en nitrates",
-        headerHeight:50, 
+        headerHeight:50,
+        collapsed: true,
         body:{
           // affiche les données de l'API dans un graphique 
           view:"chart",
@@ -173,7 +179,8 @@ webix.ui({
       {
         view:"accordionitem",
         header:"Concentration en ammoniac",
-        headerHeight:50, 
+        headerHeight:50,
+        collapsed: true,
         body:{
           // affiche les données de l'API dans un graphique 
           view:"chart",
@@ -199,7 +206,8 @@ webix.ui({
       {
         view:"accordionitem",
         header:"Conductivité",
-        headerHeight:50, 
+        headerHeight:50,
+        collapsed: true,
         body:{
           // affiche les données de l'API dans un graphique 
           view:"chart",
@@ -242,13 +250,21 @@ webix.ajax("https://aquatrackapi.ir.lan/aqr/116/ppc").then(function(data){
   const ammoniacItems = items.filter(function(item){ return item.type_id == 7; });
   const conductiviteItems = items.filter(function(item){ return item.type_id == 8; });
 
-  // met les données dans les graphiques correspondants
+  // met les données dans les graphiques correspondants et les trie par date dans l'ordre croissant
   $$('Température_chart').parse(temperatureItems);
+  $$('Température_chart').sort('#Date#','asc');
   $$('Acidité_chart').parse(aciditeItems);
+  $$('Acidité_chart').sort('#Date#','asc');
   $$('Dureté carbonatée_chart').parse(dureteCarbonateeItems);
+  $$('Dureté carbonatée_chart').sort('#Date#','asc');
   $$('Dureté totale_chart').parse(dureteTotaleItems);
+  $$('Dureté totale_chart').sort('#Date#','asc');
   $$('Concentration en nitrites_chart').parse(nitritesItems);
+  $$('Concentration en nitrites_chart').sort('#Date#','asc');
   $$('Concentration en nitrates_chart').parse(nitratesItems);
+  $$('Concentration en nitrates_chart').sort('#Date#','asc');
   $$('Concentration en ammoniac_chart').parse(ammoniacItems);
+  $$('Concentration en ammoniac_chart').sort('#Date#','asc');
   $$('Conductivité_chart').parse(conductiviteItems);
+  $$('Conductivité_chart').sort('#Date#','asc');
 });
