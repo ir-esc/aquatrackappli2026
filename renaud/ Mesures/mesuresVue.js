@@ -24,6 +24,7 @@ webix.ui({
             end:30,
             step:5,
           },
+          // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
             template: "#valeur#"
           }
@@ -54,6 +55,7 @@ webix.ui({
               return obj%7 ? "" : obj;
             }
           },
+          // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
             template: "#valeur#"
           }
@@ -84,6 +86,7 @@ webix.ui({
               return obj%6 ? "" : obj;
             }
           },
+          // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
             template: "#valeur#"
           }
@@ -114,6 +117,7 @@ webix.ui({
               return obj%6 ? "" : obj;
             }
           },
+          // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
             template: "#valeur#"
           }
@@ -141,6 +145,7 @@ webix.ui({
             end:1,
             step:0.1,
           },
+          // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
             template: "#valeur#"
           }
@@ -171,6 +176,7 @@ webix.ui({
               return obj%10 ? "" : obj;
             }
           },
+          // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
             template: "#valeur#"
           }
@@ -198,6 +204,7 @@ webix.ui({
             end:0.5,
             step:0.05,
           },
+          // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
             template: "#valeur#"
           }
@@ -228,6 +235,7 @@ webix.ui({
               return obj%200 ? "" : obj;
             }
           },
+          // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
             template: "#valeur#"
           }
