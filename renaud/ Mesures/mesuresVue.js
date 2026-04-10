@@ -1,7 +1,4 @@
 webix.ui({
-  view: "scrollview",
-  scroll: "y",
-  body: {
     // mets les mesures dans un accordéon
     view:"accordion",
     rows:[ 
@@ -230,7 +227,7 @@ webix.ui({
       }
     ]  
   }
-});
+);
 
 // récupère les données de l'API avec l'URL spécifiée seulement pour l'aquarium TEST-A (116)
 webix.ajax("https://aquatrackapi.ir.lan/aqr/116/ppc").then(function(data){
