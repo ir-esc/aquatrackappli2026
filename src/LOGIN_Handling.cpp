@@ -1,35 +1,34 @@
 #include "Login_handling.h"
 #include <Arduino.h>
+#include <WiFi.h>
+#include <ArduinoJson.h>
+#include "Wifi_handling.h"
 
 void loginAPI() {
-    HTTPClient http;
+    WiFiClient client;
 
-    String url = "http://aquatrackapi.ir.lan/log";
-    http.begin(url);
-
-    http.addHeader("Content-Type", "application/json");
-    http.addHeader("accept", "application/json");
-
-    String body = R"({
-        "email": "Alex@ir.lan",
-        "motdepasse": "motdepasse"
-    })";
-
-    Serial.println("Envoi requête login...");
-
-    int httpCode = http.POST(body);
-
-    if (httpCode > 0) {
-        Serial.print("Code HTTP: ");
-        Serial.println(httpCode);
-
-        String response = http.getString();
-        Serial.println("Réponse serveur:");
-        Serial.println(response);
-    } else {
-        Serial.print("Erreur HTTP: ");
-        Serial.println(httpCode);
+    if (!client.connect("192.168.63.44", 80)) {
+        Serial.println("Login: connexion échouée");
+        return;
     }
 
-    http.end();
+    String body = "{\"email\":\"Alex@ir.lan\",\"motdepasse\":\"Alex1234\"}";
+
+    client.println("POST /log HTTP/1.1");
+    client.println("Host: aquatrackapi.ir.lan");
+    client.println("Content-Type: application/json");
+    client.println("accept: application/json");
+    client.println("Content-Length: " + String(body.length()));
+    client.println();
+    client.print(body);
+
+    String response = "";
+    while (client.connected() || client.available()) {
+        if (client.available()) {
+            response += client.readString();
+        }
+    }
+    client.stop();
+
+    Serial.println("Réponse login: " + response);
 }

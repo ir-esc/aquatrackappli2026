@@ -4,48 +4,57 @@
 #include <ArduinoJson.h>
 #include "Wifi_handling.h"
 
-const char* server = "aquatrackapi.ir.lan";
-const int aquariumId = 11; // ID de ton aquarium
+const char* server = "aquatrackapi.ir.lan"; 
+const int aquariumId = 116; // ID de ton aquarium
 
 // ================== Création de l'observation ==================
 int createObservation() {
-    HTTPClient http;
-    String url = "http://" + String(server) + "/aqr/" + String(aquariumId) + "/obs";
-    http.begin(url);
-    http.addHeader("Content-Type", "application/json");
-    http.addHeader("accept", "application/json");
+    WiFiClient client;
 
-    String body = R"({
-        "texte": "Test ESP32",
-        "date": "2026-03-23T09:25:57.627Z",
-        "media_id": 2
-    })";
-
-    int httpCode = http.POST(body);
-
-    if (httpCode > 0) {
-        String response = http.getString();
-        Serial.println("Réponse obs:");
-        Serial.println(response);
-
-        DynamicJsonDocument doc(1024);
-        DeserializationError error = deserializeJson(doc, response);
-        if (!error) {
-            int obsId = doc["id"];
-            wifiLog("Observation ID: ");
-            Serial.println(obsId);
-            http.end();
-            return obsId;
-        } else {
-            wifiLog("Erreur JSON");
-        }
-    } else {
-        wifiLog("Erreur HTTP: ");
-        Serial.println(httpCode);
+    if (!client.connect("aquatrackapi.ir.lan", 80)) {
+        Serial.println("Connexion échouée");
+        return -1;
     }
 
-    http.end();
-    return -1; // erreur
+    String body = "{\"texte\":\"Test ESP32\",\"date\":\"2026-03-23T09:25:57.627Z\"}";
+
+    client.println("POST /aqr/" + String(aquariumId) + "/obs HTTP/1.1");
+    client.println("Host: aquatrackapi.ir.lan");
+    client.println("Content-Type: application/json");
+    client.println("accept: application/json");
+    client.println("Content-Length: " + String(body.length()));
+    client.println();
+    client.print(body);
+
+    // Lire réponse complète
+    String response = "";
+    while (client.connected() || client.available()) {
+        if (client.available()) {
+            response += client.readString();
+        }
+    }
+    client.stop();
+
+    Serial.println("Réponse obs: " + response);
+
+    // Extraire juste le JSON (après les headers HTTP)
+    int jsonStart = response.indexOf('{');
+    if (jsonStart == -1) {
+        Serial.println("Pas de JSON dans la réponse");
+        return -1;
+    }
+    String json = response.substring(jsonStart);
+    Serial.println("JSON extrait: " + json);
+
+    DynamicJsonDocument doc(1024);
+    if (deserializeJson(doc, json) != DeserializationError::Ok) {
+        Serial.println("Erreur JSON");
+        return -1;
+    }
+
+    int obsId = doc["id"];
+    Serial.println("Observation ID: " + String(obsId));
+    return obsId;
 }
 
 // ================== Ajout media à l'observation ==================
@@ -57,7 +66,7 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
     String boundary = "----ESP32CamBoundary";
 
     if (!client.connect(server, port)) {
-        wifiLog("Connexion échouée");
+        Serial.println("Connexion échouée");
         return;
     }
 
@@ -74,7 +83,7 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
 
     // Header HTTP
     client.println("POST " + url + " HTTP/1.1");
-    client.println("Host: " + String(server));
+    client.println("Host: aquatrackapi.ir.lan");
     client.println("Content-Type: multipart/form-data; boundary=" + boundary);
     client.println("Content-Length: " + String(contentLength));
     client.println();
@@ -91,6 +100,6 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
         if (line == "\r") break;
     }
 
-    wifiLog("Media upload terminé");
+    Serial.println("Media upload terminé");
     client.stop();
 }

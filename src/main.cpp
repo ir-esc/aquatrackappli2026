@@ -7,13 +7,10 @@
 #include "LOGIN_Handling.h"
 #include "Photo_sending.h"
 
-#define MAX_PHOTOS 20  // nombre maximum de photos à garder en mémoire
-
 // ================== VARIABLES ==================
 unsigned long last_photo = 0;
 unsigned long interval_saisie = 10000; // 10s
-int photoCounter = 0;
-String photoList[MAX_PHOTOS]; // liste des noms de photos
+
 
 
 
@@ -68,59 +65,7 @@ void startCamera() {
     }
 }
 
-// ================== ENVOI PHOTO ==================
-void sendPhoto(camera_fb_t* fb, const String& photoName) {
-    if (!fb) return;
 
-    WiFiClient client;
-    String server = "aquatrackapi.ir.lan";
-    String url = "/aqr/11/med";  //  mets ton aquariumId ici
-
-    Serial.println("Connexion au serveur...");
-
-    if (!client.connect(server.c_str(), 80)) {
-        Serial.println("Connexion échouée");
-        return;
-    }
-
-    String boundary = "----ESP32CamBoundary";
-
-    // Corps début
-    String bodyStart =
-        "--" + boundary + "\r\n"
-        "Content-Disposition: form-data; name=\"media\"; filename=\"" + photoName + "\"\r\n"
-        "Content-Type: image/jpeg\r\n\r\n";
-
-    String bodyEnd = "\r\n--" + boundary + "--\r\n";
-
-    int contentLength = bodyStart.length() + fb->len + bodyEnd.length();
-
-    // HEADER HTTP
-    client.println("POST " + url + " HTTP/1.1");
-    client.println("Host: " + server);
-    client.println("Content-Type: multipart/form-data; boundary=" + boundary);
-    client.println("Content-Length: " + String(contentLength));
-    client.println();
-
-    Serial.println("Envoi header OK");
-
-    // ENVOI DATA
-    client.print(bodyStart);
-    client.write(fb->buf, fb->len);
-    client.print(bodyEnd);
-
-    Serial.println("Image envoyée, attente réponse...");
-
-    //  LECTURE REPONSE
-    while (client.connected()) {
-        String line = client.readStringUntil('\n');
-        Serial.println(line);
-        if (line == "\r") break;
-    }
-
-    Serial.println("Upload terminé");
-    client.stop();
-}
 
 String getTimestamp() {
     struct tm timeinfo;
@@ -135,29 +80,24 @@ String getTimestamp() {
     return String(buffer);
 }
 
-WiFiServer debugServer(8080);  // petit port juste pour debug
 
-void startDebugServer() {
-    debugServer.begin();
-}
 // ================== SETUP ==================
 void setup() {
     Serial.begin(115200);
     Serial.print("test");
     initWiFi();
-    startDebugServer();
     loginAPI();
     startCamera();
-    wifiLog("caméra démarée");
+    Serial.println("caméra démarée");
      // Test création observation + upload media
     camera_fb_t* fb = esp_camera_fb_get();
-     wifiLog("photo de setup prise");
+     Serial.println("photo de setup prise");
     if (fb) {
         int obsId = createObservation();
-         wifiLog("observation créee");
+         Serial.println("observation créee");
         if (obsId > 0) {
             addMediaToObservation(obsId, fb);
-             wifiLog("Média ajoutée a l'observation");
+             Serial.println("Média ajoutée a l'observation");
         }
         esp_camera_fb_return(fb);
     }
@@ -206,32 +146,14 @@ void setup() {
 
 
 
-void handleDebugClient() {
-    WiFiClient client = debugServer.available();
-    if (!client) return;
 
-    // attendre que le client envoie une requête HTTP (ici on ne lit pas vraiment)
-    while (!client.available()) delay(1);
-
-    String req = client.readStringUntil('\n');
-    client.flush();
-
-    // envoyer le contenu du buffer
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: text/plain");
-    client.println();
-    client.print(logsBuffer); // <- pas println, sinon double saut
-    logsBuffer = "";           // <- réinitialiser après lecture
-
-    client.stop();
-}
 
 // ================== LOOP ==================
 void loop() {
    // handleClient();
-    handleDebugClient();
+ 
     // Photo automatique toutes les interval_saisie
-    unsigned long tps = millis();
+   /* unsigned long tps = millis();
     if (tps - last_photo >= interval_saisie) {
         last_photo = tps;
         camera_fb_t* fb = esp_camera_fb_get();
@@ -241,5 +163,5 @@ void loop() {
             esp_camera_fb_return(fb);
             wifiLog("Photo auto");
         }
-    }
+    } */
 }
