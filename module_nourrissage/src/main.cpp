@@ -11,10 +11,16 @@ int CONTACTEUR = 13;
 int etat_moteur = 2;
 unsigned long temps_rebond = 0;
 
-int heure_declenchement = 14;
-int minute_declenchement = 32;
+//tableau pour effectuer plusieurs déclenchements à des horaires différents
+int horaires[] [2] = {
+   {16,25},
+   {16,27},
+   {16,31},
+   {16,34}
+};
+const int NB_HORAIRES = sizeof(horaires) / sizeof(horaires[0]);     //permet de calculer le nombre de ligne du tableau
 
-bool deja_declenche = false;    // permet d'éviter plusieurs déclenchements
+bool deja_declenche[NB_HORAIRES];    //permet de réaliser un seul déclenchement à la fois
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600 * 1;
@@ -27,6 +33,10 @@ void setup() {
    pinMode(CONTACTEUR, INPUT_PULLUP);
    Serial.begin(115200);
    delay(1000);
+
+   for (int i = 0; i < NB_HORAIRES; i++) {
+       deja_declenche[i] = false;
+   }
 
    WiFi.begin(ssid, password);
    Serial.println("\nConnecting");
@@ -54,19 +64,19 @@ void loop() {
 
    // moteur arrêté sur contacteur
    if (etat_moteur == 2) {
-       if (timeinfo.tm_hour == heure_declenchement && timeinfo.tm_min  == minute_declenchement && !deja_declenche) {
-           digitalWrite(ENA, HIGH);
-           digitalWrite(IN1, LOW);
-           digitalWrite(IN2, HIGH);
-
-           etat_moteur = 0;
-           deja_declenche = true;
+       for (int i = 0; i < NB_HORAIRES; i++) {
+           if (timeinfo.tm_hour == horaires[i][0] && timeinfo.tm_min  == horaires[i][1] && !deja_declenche[i]) {
+               digitalWrite(ENA, HIGH);
+               digitalWrite(IN1, LOW);
+               digitalWrite(IN2, HIGH);
+               etat_moteur = 0;
+               deja_declenche[i] = true;
+           }
+           // reset du déclenchement
+           if (timeinfo.tm_min != horaires[i][1]) {
+               deja_declenche[i] = false;
+           }
        }
-   }
-
-   // reset du déclenchement
-   if (timeinfo.tm_min != minute_declenchement) {
-       deja_declenche = false;
    }
 
    // quitter le contacteur
