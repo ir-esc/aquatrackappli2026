@@ -5,7 +5,9 @@ WiFiServer localserver(80);
 const char* ssid = "IRO";
 const char* password = "Cirrus=14014";
 
+String sessionCookie = "";
 
+  
 void initWiFi() {
     WiFi.setHostname("esp32cam");
     WiFi.begin(ssid, password);
@@ -20,7 +22,7 @@ void initWiFi() {
 Serial.println("WiFi connecté");
     Serial.println(WiFi.localIP());
 
-    configTime(3600, 0, "pool.ntp.org");
+    configTime(3600, 3600, "pool.ntp.org");
 
     struct tm timeinfo;
     if (!getLocalTime(&timeinfo, 10000)) {

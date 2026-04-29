@@ -6,12 +6,15 @@
 #include "Wifi_handling.h"
 #include "LOGIN_Handling.h"
 #include "Photo_sending.h"
+#include "Config_Fetcher.h"
+#include "Scheduler.h"
+
 
 // ================== VARIABLES ==================
 unsigned long last_photo = 0;
 unsigned long interval_saisie = 10000; // 10s
-
-
+unsigned long lastLogin = 0;
+unsigned long last_config_fetch = 0;
 
 
 // ================== CAMERA ==================
@@ -80,27 +83,44 @@ String getTimestamp() {
     return String(buffer);
 }
 
+void prendrePhoto() {
+    camera_fb_t* fb = esp_camera_fb_get();
+    if (!fb) {
+        Serial.println("Erreur capture photo");
+        return;
+    }
+    int obsId = createObservation();
+    Serial.println("observation créee");
+    if (obsId > 0) {
+        addMediaToObservation(obsId, fb);
+        Serial.println("Média ajoutée a l'observation");
+    }
+    esp_camera_fb_return(fb);
+}
 
 // ================== SETUP ==================
 void setup() {
     Serial.begin(115200);
     Serial.print("test");
     initWiFi();
+// Test NTP
+    struct tm timeinfo;
+if (getLocalTime(&timeinfo)) {
+    Serial.println("Heure ESP32: " + String(timeinfo.tm_hour) + "h" + String(timeinfo.tm_min));
+} else {
+    Serial.println("NTP pas dispo");
+} // fin test NTP
+
     loginAPI();
+    delay(500);
+    lastLogin = millis();
+    fetchConfig();
     startCamera();
     Serial.println("caméra démarée");
      // Test création observation + upload media
-    camera_fb_t* fb = esp_camera_fb_get();
+    prendrePhoto();
      Serial.println("photo de setup prise");
-    if (fb) {
-        int obsId = createObservation();
-         Serial.println("observation créee");
-        if (obsId > 0) {
-            addMediaToObservation(obsId, fb);
-             Serial.println("Média ajoutée a l'observation");
-        }
-        esp_camera_fb_return(fb);
-    }
+    
 }
 
 // ================== GESTION CLIENT ==================
@@ -150,6 +170,16 @@ void setup() {
 
 // ================== LOOP ==================
 void loop() {
+     if (millis() - lastLogin >= 3600000) {
+        lastLogin = millis();
+        loginAPI();
+        delay(500);
+    }
+
+    if (millis() - last_config_fetch >= 30000) {
+        last_config_fetch = millis();
+        fetchConfig();
+    }
    // handleClient();
  
     // Photo automatique toutes les interval_saisie
@@ -164,4 +194,15 @@ void loop() {
             wifiLog("Photo auto");
         }
     } */
+
+    if (scheduler.mode == "interval") {
+        if (millis() - last_photo >= scheduler.intervalle_ms) {
+            last_photo = millis();
+            prendrePhoto();
+        }
+    } else if (scheduler.mode == "schedule") {
+        if (scheduler.doitPrendrePhoto()) {
+            prendrePhoto();
+        }
+    }
 }

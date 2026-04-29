@@ -15,12 +15,18 @@ int createObservation() {
         Serial.println("Connexion échouée");
         return -1;
     }
+struct tm timeinfo;
+getLocalTime(&timeinfo);
+char buffer[30];
+strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S.000Z", &timeinfo);
+String date = String(buffer);
 
-    String body = "{\"texte\":\"Test ESP32\",\"date\":\"2026-03-23T09:25:57.627Z\"}";
+String body = "{\"texte\":\"Photo ESP32\",\"date\":\"" + date + "\"}";
 
     client.println("POST /aqr/" + String(aquariumId) + "/obs HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
     client.println("Content-Type: application/json");
+    client.println("Cookie: " + sessionCookie);
     client.println("accept: application/json");
     client.println("Content-Length: " + String(body.length()));
     client.println();
@@ -85,6 +91,7 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
     client.println("POST " + url + " HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
     client.println("Content-Type: multipart/form-data; boundary=" + boundary);
+    client.println("Cookie: " + sessionCookie);
     client.println("Content-Length: " + String(contentLength));
     client.println();
 

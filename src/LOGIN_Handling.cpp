@@ -28,6 +28,16 @@ void loginAPI() {
             response += client.readString();
         }
     }
+
+     // extraire le cookie de session
+    int cookieStart = response.indexOf("ci_session=");
+    if (cookieStart != -1) {
+        int cookieEnd = response.indexOf(";", cookieStart);
+        sessionCookie = response.substring(cookieStart, cookieEnd);
+        Serial.println("Cookie stocké: " + sessionCookie);
+    } else {
+        Serial.println("Pas de cookie dans la réponse");
+    }
     client.stop();
 
     Serial.println("Réponse login: " + response);
