@@ -20,6 +20,7 @@ Serial.begin(115200);
 ph.begin();
 
 connexionWifi("IR", "G00dWave$");
+configTime(3600, 3600, "pool.ntp.org");
 
 int intervalle = getIntervalle();
 
@@ -31,6 +32,13 @@ if (intervalle > 0) {
 }
 
 void envoiAPI(float phValue){
+	struct tm timeinfo;
+
+	getLocalTime(&timeinfo);
+	char buffer[20];
+	strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &timeinfo);
+	String date = String(buffer);
+
 
     HTTPClient http;
 
@@ -41,7 +49,7 @@ void envoiAPI(float phValue){
     StaticJsonDocument<200> doc;
     doc["type_id"] = 2;
     doc["valeur"] = phValue;
-    doc["date"] = "";
+    doc["date"] = date;
 
     String requestBody;
     serializeJson(doc, requestBody);
