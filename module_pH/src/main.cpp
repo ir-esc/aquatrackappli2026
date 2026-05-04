@@ -1,5 +1,6 @@
 #include "DFRobot_ESP_PH.h"
 #include <EEPROM.h>
+#include "Wifi.h"
 
 #define ESPADC      4096.0
 #define ESPVOLTAGE  3300
@@ -16,41 +17,28 @@ float temperature = 25.0;
 
 void setup() {
     Serial.begin(115200);
-    while (!Serial) { ; }
-
-    EEPROM.begin(32);
     ph.begin();
 
-    Serial.println("Température fixée à 25.0 °C (test)");
-    Serial.println("Envoyez 'ENTERPH' pour démarrer la calibration");
-    Serial.println("------------------------------------\n");
+    connexionWifi("IR", "G00dWave$");
 }
 
 
 void loop() {
     static unsigned long lastTime = millis();
 
-    if (millis() - lastTime >= INTERVAL_MS) {
-        lastTime = millis();
+	if (millis() - lastTime >= (getIntervalle())*1000) {
+		lastTime = millis();
 
-        voltage = analogRead(PH_PIN) / ESPADC * ESPVOLTAGE;
+		voltage = analogRead(PH_PIN) / ESPADC * ESPVOLTAGE;
 
-        phValue = ph.readPH(voltage, temperature);
+		phValue = ph.readPH(voltage, temperature);
 
-        Serial.println("------------------------------------");
-        Serial.print("Tension    : ");
-        Serial.print(voltage, 2);
-        Serial.println(" mV");
 
-        Serial.print("Température: ");
-        Serial.print(temperature, 1);
-        Serial.println(" °C (fixe)");
-
-        Serial.print("pH         : ");
-        Serial.println(phValue, 2);
+		Serial.print("Voltage: ");
+		Serial.println(voltage);
+		Serial.print("pH : ");
+		Serial.println(phValue, 1);
     }
-
-    ph.calibration(voltage, temperature);
 }
 
 
