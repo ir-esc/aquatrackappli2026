@@ -4,7 +4,8 @@ webix.ready(function(){
     view: "scrollview",
     scroll: "y",
     body: {
-      rows:[{
+      rows:[
+        {
           // affiche les aquariums et leurs données de l'API dans une datatable
           view:"datatable",
           columns:[
@@ -21,7 +22,9 @@ webix.ready(function(){
             return webix.ajax("https://aquatrackapi.ir.lan/aqr");
           },
           scrollX: false
-        }]
+        },
+        {view:"button", value:"Voir les mesures", width:150, align:"center", click:function(){window.location.href = "/Mesures/mesures.html";}}
+      ]
     }
   });
 }  
