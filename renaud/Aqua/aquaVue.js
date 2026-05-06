@@ -11,7 +11,6 @@ function afficherAquariums() {
           columns:[
             { id:"media_id", header:"Image", width:55, template:"<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='55' height='55'>"},
             { id:"nom", header:"Nom", fillspace:true },
-            // mettre oui ou non par rapport à l'id de l'utilisateur connecté (pas fait pour le moment)
             { id:"user_id", header:"Propriétaire", width:90 },
             { id:"acces", header:"Accès", width:90 },
             { id:"volume", header:"Volume", width:90 },
@@ -27,8 +26,8 @@ function afficherAquariums() {
         {
           view:"toolbar",
           cols:[
-            // redirige vers la page de mesures de l'aquarium sélectionné
             {
+              // redirige vers la page de mesures de l'aquarium sélectionné
               view:"button", value:"Voir", css:"webix_secondary", height:50, click:function(){
                 var selected = $$("aquaTable").getSelectedItem()
                 if(selected && selected.id) {
