@@ -117,10 +117,10 @@ webix.ready(function(){
           yAxis:{
             title:"GH",
             start:0,
-            end:18,
-            step:3,
+            end:30,
+            step:2.5,
             template:function(obj){
-              return obj%6 ? "" : obj;
+              return obj%5 ? "" : obj;
             }
           },
           // affiche la valeur dans une infobulle au survol du point avec la souris
@@ -249,9 +249,12 @@ webix.ready(function(){
       }
     ]
   });
-
-  // récupère les données de l'API avec l'URL spécifiée seulement pour l'aquarium TEST-A (116)
-  webix.ajax("https://aquatrackapi.ir.lan/aqr/116/ppc").then(function(data){
+  // Récupère l'ID de l'aquarium depuis l'URL
+  var urlParams = new URLSearchParams(window.location.search);
+  var aquariumId = urlParams.get('id');
+  
+  // récupère les données de l'API avec l'URL spécifiée pour l'aquarium sélectionné
+  webix.ajax("https://aquatrackapi.ir.lan/aqr/" + aquariumId + "/ppc").then(function(data){
     const items = data.json();
     // filtre les mesures avec la date 0
     const filteredItems = items.filter(function(item){ return item.date !== "0000-00-00 00:00:00"; });

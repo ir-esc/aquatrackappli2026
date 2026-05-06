@@ -1,6 +1,5 @@
-webix.ready(function(){
-  function afficherAquariums() {
-    webix.ui({
+function afficherAquariums() {
+  webix.ui({
     view: "scrollview",
     scroll: "y",
     body: {
@@ -8,6 +7,7 @@ webix.ready(function(){
         {
           // affiche les aquariums et leurs données de l'API dans une datatable
           view:"datatable",
+          id:"aquaTable",
           columns:[
             { id:"media_id", header:"Image", width:55, template:"<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='55' height='55'>"},
             { id:"nom", header:"Nom", fillspace:true },
@@ -21,17 +21,32 @@ webix.ready(function(){
           url:function(params){
             return webix.ajax("https://aquatrackapi.ir.lan/aqr");
           },
+          select:"row",
           scrollX: false
         },
-        {view:"button", value:"Voir les mesures", width:150, align:"center", click:function(){window.location.href = "/Mesures/mesures.html";}}
+        {
+          view:"toolbar",
+          cols:[
+            // redirige vers la page de mesures de l'aquarium sélectionné
+            {view:"button", value:"Mesures", height:50, click:function(){
+              var selected = $$("aquaTable").getSelectedItem();
+              if(selected && selected.id) {
+                window.location.href = "../Mesures/mesures.html?id=" + selected.id;
+              } else {
+                webix.alert("Veuillez sélectionner un aquarium");
+              }
+            }}
+          ]
+        }
       ]
     }
   });
-}  
-  // autorise les requêtes AJAX à inclure les cookies pour l'authentification
-  webix.attachEvent("onBeforeAjax", function(mode, url, data, request) {
-    request.withCredentials = true;
-  });
+}
+// autorise les requêtes AJAX à inclure les cookies pour l'authentification
+webix.attachEvent("onBeforeAjax", function(mode, url, data, request) {
+  request.withCredentials = true;
+});
+webix.ready(function(){
   // envoie une requête POST à l'API pour se connecter avec les informations d'identification
   webix.ajax()
     .headers({"Content-Type":"application/json"})
