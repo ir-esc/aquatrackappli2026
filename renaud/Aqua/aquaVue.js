@@ -28,14 +28,26 @@ function afficherAquariums() {
           view:"toolbar",
           cols:[
             // redirige vers la page de mesures de l'aquarium sélectionné
-            {view:"button", value:"Mesures", height:50, click:function(){
-              var selected = $$("aquaTable").getSelectedItem();
-              if(selected && selected.id) {
-                window.location.href = "../Mesures/mesures.html?id=" + selected.id;
-              } else {
-                webix.alert("Veuillez sélectionner un aquarium");
+            {
+              view:"button", value:"Voir", css:"webix_secondary", height:50, click:function(){
+                var selected = $$("aquaTable").getSelectedItem()
+                if(selected && selected.id) {
+                  window.location.href = "../Mesures/mesures.html?id=" + selected.id;
+                }
+                else {
+                  webix.alert("Veuillez sélectionner un aquarium");
+                }
               }
-            }}
+            },
+            {
+              view:"button", value:"Ajouter", css:"webix_primary", height:50
+            },
+            {
+              view:"button", value:"Supprimer", css:"webix_danger", height:50
+            },
+            {
+              view:"button", value:"Modifier", css:"webix_transparent", height:50
+            }
           ]
         }
       ]
