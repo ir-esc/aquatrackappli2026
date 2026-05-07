@@ -5,14 +5,16 @@
 #include "Wifi_handling.h"
 
 void loginAPI() {
-    WiFiClient client;
+    WiFiClient client; // On utilise WiFiClient directement pour mieux contrôler la requête et lire la réponse complète
 
     if (!client.connect("192.168.63.44", 80)) {
         Serial.println("Login: connexion échouée");
         return;
     }
 
+    // Préparer le corps de la requête avec les identifiants, temporaire car il faudrait créer un utilisateur admin special esp32 dans l'API
     String body = "{\"email\":\"Alex@ir.lan\",\"motdepasse\":\"Alex1234\"}";
+
 
     client.println("POST /log HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");

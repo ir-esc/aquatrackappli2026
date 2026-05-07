@@ -9,19 +9,21 @@ const int aquariumId = 116; // ID de ton aquarium
 
 // ================== Création de l'observation ==================
 int createObservation() {
-    WiFiClient client;
+    WiFiClient client; // On utilise WiFiClient directement pour mieux contrôler la requête et lire la réponse complète
 
     if (!client.connect("aquatrackapi.ir.lan", 80)) {
         Serial.println("Connexion échouée");
         return -1;
     }
-struct tm timeinfo;
-getLocalTime(&timeinfo);
-char buffer[30];
-strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S.000Z", &timeinfo);
-String date = String(buffer);
 
-String body = "{\"texte\":\"Photo ESP32\",\"date\":\"" + date + "\"}";
+    // Préparer le corps de la requête avec la date actuelle au format ISO 8601
+    struct tm timeinfo;
+    getLocalTime(&timeinfo); 
+    char buffer[30];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S.000Z", &timeinfo); // Format ISO 8601 attendu par l'API
+    String date = String(buffer);
+
+    String body = "{\"texte\":\"Photo ESP32\",\"date\":\"" + date + "\"}";
 
     client.println("POST /aqr/" + String(aquariumId) + "/obs HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
@@ -32,7 +34,7 @@ String body = "{\"texte\":\"Photo ESP32\",\"date\":\"" + date + "\"}";
     client.println();
     client.print(body);
 
-    // Lire réponse complète
+    // Lire réponse complète 
     String response = "";
     while (client.connected() || client.available()) {
         if (client.available()) {
@@ -69,7 +71,7 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
 
     WiFiClient client;
     int port = 80;
-    String boundary = "----ESP32CamBoundary";
+    String boundary = "----ESP32CamBoundary"; // Boundary pour multipart/form-data explique : https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type#multipartform-data
 
     if (!client.connect(server, port)) {
         Serial.println("Connexion échouée");
@@ -77,14 +79,16 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
     }
 
     String url = "/obs/" + String(obsId) + "/med";
-    String fieldName = "media";
+    String fieldName = "media"; // Le nom du champ attendu par l'API pour le fichier
 
+    // Préparer le corps de la requête multipart/form-data 
     String bodyStart =
         "--" + boundary + "\r\n"
         "Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"photo.jpg\"\r\n"
         "Content-Type: image/jpeg\r\n\r\n";
 
     String bodyEnd = "\r\n--" + boundary + "--\r\n";
+    // Le content length doit être la somme de la taille du bodyStart, de la photo, et du bodyEnd
     int contentLength = bodyStart.length() + fb->len + bodyEnd.length();
 
     // Header HTTP
@@ -101,11 +105,14 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
     client.print(bodyEnd);
 
     // Lire réponse
-    while (client.connected()) {
-        String line = client.readStringUntil('\n');
-        Serial.println(line);
-        if (line == "\r") break;
+   String response = "";
+    while (client.connected() || client.available()) {
+        if (client.available()) {
+            response += client.readString();
+        }
     }
+    Serial.println("Réponse addMedia: " + response);
+   
 
     Serial.println("Media upload terminé");
     client.stop();

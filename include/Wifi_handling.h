@@ -5,6 +5,7 @@
 #include <WiFi.h>
 #include <time.h>
 
+
 // ================== COOKIE ==================
 extern String sessionCookie;
 // ================== WIFI CONFIG ==================
@@ -13,7 +14,6 @@ extern const char* password;
 
 // ================== SERVEUR ==================
 extern WiFiServer localserver;
-extern String logsBuffer;
 // ================== INIT ==================
 void initWiFi();
 

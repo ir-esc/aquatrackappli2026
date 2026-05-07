@@ -5,6 +5,7 @@
 #include <ArduinoJson.h>
 #include <time.h>
 
+// Gère la logique de quand prendre les photos, selon la config reçue de l'API
 class Scheduler {
 public:
     String mode;

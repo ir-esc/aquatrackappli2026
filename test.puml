@@ -1,0 +1,63 @@
+@startuml
+title Diagramme de séquence général - Aquatrack
+
+skinparam actorStyle awesome
+skinparam sequence {
+    ParticipantBackgroundColor LightBlue
+    ParticipantBorderColor DarkBlue
+    LifeLineBackgroundColor #D9EFFF
+    LifeLineBorderColor DarkBlue
+    ArrowColor DarkBlue
+    ActorBackgroundColor LightBlue
+    ActorBorderColor DarkBlue
+}
+
+actor Utilisateur #LightBlue
+participant "Application Web" as WebApp #LightBlue
+participant "API REST" as API #LightBlue
+participant "Modules connectés" as Modules #LightBlue
+
+== Authentification ==
+Utilisateur -> WebApp : Saisir ses identifiants
+activate WebApp #LightBlue
+WebApp -> API : Demande d'authentification
+activate API #LightBlue
+API --> WebApp : Réponse d'authentification
+deactivate API
+WebApp --> Utilisateur : Accès à l'application
+deactivate WebApp
+
+== Consultation des données ==
+Utilisateur -> WebApp : Consulter un aquarium
+activate WebApp #LightBlue
+WebApp -> API : Demander les données de l'aquarium
+activate API #LightBlue
+API --> WebApp : Retourner observations,\nmesures, photos, modules
+deactivate API
+WebApp --> Utilisateur : Afficher les informations
+deactivate WebApp
+
+== Remontée des données des modules ==
+
+Modules -> API : Envoyer mesures, photos\nou états
+activate Modules #LightBlue
+activate API #LightBlue
+API --> Modules : Confirmer la réception
+deactivate API
+deactivate Modules
+
+== Configuration / pilotage ==
+Utilisateur -> WebApp : Modifier un paramètre\nou piloter un module
+activate WebApp #LightBlue
+WebApp -> API : Envoyer la nouvelle configuration
+activate API #LightBlue
+API -> Modules : Transmettre la configuration
+activate Modules #LightBlue
+Modules --> API : Confirmer la réception
+deactivate Modules
+API --> WebApp : Notification de confirmation
+deactivate API
+WebApp --> Utilisateur : Afficher "Configuration\nprise en compte"
+deactivate WebApp
+
+@enduml

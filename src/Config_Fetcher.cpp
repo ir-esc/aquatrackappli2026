@@ -7,7 +7,7 @@
 const int moduleId = 6;
 
 void fetchConfig() {
-    WiFiClient client;
+    WiFiClient client; // On utilise WiFiClient directement pour mieux contrôler la requête et lire la réponse complète
 
     if (!client.connect("192.168.63.44", 80)) {
         Serial.println("Config: connexion échouée");

@@ -3,8 +3,7 @@
  
 #include <Arduino.h>
  
-// Appelle l'API et retourne l'intervalle en millisecondes
-// Retourne -1 si erreur
+// Appelle l'API et récupère la config, puis la transmet au scheduler
 void fetchConfig();
  
 #endif

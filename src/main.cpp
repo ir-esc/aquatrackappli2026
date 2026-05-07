@@ -8,11 +8,10 @@
 #include "Photo_sending.h"
 #include "Config_Fetcher.h"
 #include "Scheduler.h"
-
+#include <esp_task_wdt.h>
 
 // ================== VARIABLES ==================
 unsigned long last_photo = 0;
-unsigned long interval_saisie = 10000; // 10s
 unsigned long lastLogin = 0;
 unsigned long last_config_fetch = 0;
 
@@ -59,8 +58,8 @@ void startCamera() {
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG;
-    config.frame_size = FRAMESIZE_SVGA;
-    config.jpeg_quality = 10;
+    config.frame_size = FRAMESIZE_QVGA; // liste des formats disponibles ici: FRAMESIZE_QVGA, FRAMESIZE_VGA, FRAMESIZE_SVGA, FRAMESIZE_XGA, FRAMESIZE_SXGA
+    config.jpeg_quality = 12; // 0-63 lower means higher quality
     config.fb_count = 1;
 
     if (esp_camera_init(&config) != ESP_OK) {
@@ -68,21 +67,7 @@ void startCamera() {
     }
 }
 
-
-
-String getTimestamp() {
-    struct tm timeinfo;
-
-    if (!getLocalTime(&timeinfo)) {
-        // si le NTP ne marche pas encore
-        return "no_time_" + String(millis());
-    }
-
-    char buffer[30];
-    strftime(buffer, sizeof(buffer), "%Y-%m-%d_%H-%M-%S", &timeinfo);
-    return String(buffer);
-}
-
+// Fonction courte pour gérer la prise de photo et déleguer l'envoi à d'autres fonctions
 void prendrePhoto() {
     camera_fb_t* fb = esp_camera_fb_get();
     if (!fb) {
@@ -100,6 +85,7 @@ void prendrePhoto() {
 
 // ================== SETUP ==================
 void setup() {
+
     Serial.begin(115200);
     Serial.print("test");
     initWiFi();
@@ -117,84 +103,48 @@ if (getLocalTime(&timeinfo)) {
     fetchConfig();
     startCamera();
     Serial.println("caméra démarée");
+
+    // laisser la caméra s'ajuster à la lumière
+    delay(2000);
+
+    // captures à blanc pour stabiliser l'exposition
+    for (int i = 0; i < 3; i++) {
+        camera_fb_t* fb = esp_camera_fb_get();
+        esp_camera_fb_return(fb);
+        delay(100);
+    }
+
+Serial.println("Caméra stabilisée");
+
+
      // Test création observation + upload media
+       esp_task_wdt_init(300, true); // redémarre si bloqué plus de 5mi,
+    esp_task_wdt_add(NULL); // ajoute la tâche actuelle (loop) au watchdog, pour que le watchdog puisse surveiller si loop est bloqué ou non. Si on oublie d'ajouter loop au watchdog, alors le watchdog ne fera rien et ne redémarrera jamais l'ESP32 même si loop est bloqué, ce qui n'est pas ce qu'on veut. En ajoutant loop au watchdog, on s'assure que si jamais loop se bloque (par exemple à cause d'une requête réseau qui ne répond pas), alors le watchdog redémarrera l'ESP32 pour tenter de résoudre le problème.
     prendrePhoto();
      Serial.println("photo de setup prise");
     
 }
 
-// ================== GESTION CLIENT ==================
-/* void handleClient() {
-    WiFiClient client = localserver.available();
-    if (!client) return;
-
-    String request = client.readStringUntil('\n');
-    client.flush();
-
-    // /photos : liste des photos
-    if (request.indexOf("/photos") != -1) {
-        client.println("HTTP/1.1 200 OK");
-        client.println("Content-Type: text/plain");
-        client.println();
-        for (int i = 0; i < MAX_PHOTOS; i++) {
-            if (photoList[i].length() > 0)
-                client.println(photoList[i]);
-        }
-    }
-
-    // /capture : capture immédiate
-    else if (request.indexOf("/capture") != -1) {
-        camera_fb_t* fb = esp_camera_fb_get();
-        if (!fb) return;
-
-        String photoName = "photo_" + String(photoCounter) + ".jpg";
-        client.println("HTTP/1.1 200 OK");
-        client.println("Content-Type: image/jpeg");
-        client.println("Content-Length: " + String(fb->len));
-        client.println("Connection: close");
-        client.println();
-        client.write(fb->buf, fb->len);
-
-        sendPhoto(fb, photoName);
-        esp_camera_fb_return(fb);
-    }
-
-    client.stop();
-} */
-
-
-
-
-
-
 
 // ================== LOOP ==================
 void loop() {
+
+    esp_task_wdt_reset(); // reset le watchdog timer
+
+    // Login toutes les heures pour maintenir la session active et éviter les erreurs 401
      if (millis() - lastLogin >= 3600000) {
         lastLogin = millis();
         loginAPI();
         delay(500);
     }
 
+    // Fetch config toutes les 30s pour être sûr d'avoir la config à jour, même si l'API ne supporte pas le long polling ou les websockets
     if (millis() - last_config_fetch >= 30000) {
         last_config_fetch = millis();
         fetchConfig();
     }
-   // handleClient();
- 
-    // Photo automatique toutes les interval_saisie
-   /* unsigned long tps = millis();
-    if (tps - last_photo >= interval_saisie) {
-        last_photo = tps;
-        camera_fb_t* fb = esp_camera_fb_get();
-        if (fb) {
-            String photoName = "photo_" + String(photoCounter) + getTimestamp() + ".jpg";
-            sendPhoto(fb, photoName);
-            esp_camera_fb_return(fb);
-            wifiLog("Photo auto");
-        }
-    } */
-
+  
+    // Logique de prise de photo selon la config
     if (scheduler.mode == "interval") {
         if (millis() - last_photo >= scheduler.intervalle_ms) {
             last_photo = millis();
@@ -205,4 +155,13 @@ void loop() {
             prendrePhoto();
         }
     }
+
+    // Reconnexion wifi automatique
+
+    if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi perdu, reconnexion...");
+    WiFi.reconnect();
+    delay(500);
+    return; // on attend la prochaine itération
+}
 }
