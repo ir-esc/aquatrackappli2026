@@ -53,10 +53,13 @@ function afficherAquariums() {
     }
   });
 }
+
 // autorise les requêtes AJAX à inclure les cookies pour l'authentification
-webix.attachEvent("onBeforeAjax", function(mode, url, data, request) {
-  request.withCredentials = true;
-});
+webix.attachEvent("onBeforeAjax", function(mode, url, data, request) 
+  {
+    request.withCredentials = true;
+  });
+
 webix.ready(function(){
   // envoie une requête POST à l'API pour se connecter avec les informations d'identification
   webix.ajax()
