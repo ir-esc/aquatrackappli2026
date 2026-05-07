@@ -31,20 +31,13 @@ function getVueAquariums() {
                     { id:"acces", header:"Accès", width:90 },
                     { id:"volume", header:"Volume", width:90 },
                     { id:"date", header:"Date de creation", width:155 },
-                    {
-                        id: "actions",
-                        header: "Actions",
-                        width: 200,
-                        template: function(obj) {
-                            return "<button onclick=\"voirAquarium(" + obj.id + ")\">Voir</button> " +
-                                   "<button onclick=\"supprimerAquarium(" + obj.id + ")\">Supprimer</button>";
-                        }
-                    }
                 ],
                 // récupère les données de l'API avec l'URL spécifiée
-                 url:function(params){
+                url:function(params){
                     return webix.ajax("//aquatrackapi.ir.lan/aqr");
-                 },
+                },
+                select:"row",
+                scrollX: false
             }
         ]
     };
@@ -145,3 +138,16 @@ function voirAquarium(id) {
     localStorage.setItem("aquarium_selectionne", id);
     naviguer("parametres");
 }
+
+// autorise les requêtes AJAX à inclure les cookies pour l'authentification
+webix.attachEvent("onBeforeAjax", function(mode, url, data, request) 
+  {
+    request.withCredentials = true;
+  });
+
+webix.ready(function(){
+  // envoie une requête POST à l'API pour se connecter avec les informations d'identification
+  webix.ajax()
+    .headers({"Content-Type":"application/json"})
+    .post("https://aquatrackapi.ir.lan/log",JSON.stringify({"email": "Alex@ir.lan","motdepasse": "Alex1234"}));
+});
