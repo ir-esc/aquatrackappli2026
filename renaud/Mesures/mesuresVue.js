@@ -12,7 +12,9 @@ webix.ready(function(){
         view: "toolbar",
         elements: [
           {
-            view:"button", type: "icon", icon: "mdi mdi-arrow-left", css:"webix_danger", inputWidth: 50
+            view:"button", type: "icon", icon: "mdi mdi-arrow-left", css:"webix_danger", inputWidth: 50, click:function(){
+              window.location.href = "../Aqua/aqua.html";
+            }
           },
           {},
           {
