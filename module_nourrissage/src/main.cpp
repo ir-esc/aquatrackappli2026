@@ -1,83 +1,80 @@
 #include <Arduino.h>
 #include <WiFi.h>
-#include <time.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include "wifi_config.h"
 #include "WifiManager.h"
+#include "Intervalle.h"
+#include "Login.h"
+
+int ENA=25;
+int IN1=26;
+int IN2=27;
+int CONTACTEUR=13;
+
+int etat_moteur = 2;
+unsigned long temps_rebond = 0;
+unsigned long temps_cycle = 0;
 
 void setup() {
     Serial.begin(115200);
+    pinMode(IN1,OUTPUT);
+    pinMode(IN2,OUTPUT);
+    pinMode(ENA,OUTPUT);
+    pinMode(CONTACTEUR, INPUT_PULLUP);
 
     connexionWifi(ssid, password);
-    configTime(3600, 3600, "pool.ntp.org");
-}
 
-void loginApi() {
-    HTTPClient http;
+    int intervalle = getIntervalle();
 
-    http.begin("http://aquatrackapi.ir.lan/log");
-
-    http.addHeader("Content-Type", "application/json");
-
-    String body = "{";
-    body += "\"email\":\"Alex@ir.lan\",";
-    body += "\"motdepasse\":\"Alex1234\"";
-    body += "}";
-
-    int code = http.POST(body);
-
-    Serial.print("Login code: ");
-    Serial.println(code);
-    Serial.println(http.getString());
-
-    http.end();
-}
-
-void envoiAPI() {
-    struct tm timeinfo;
-
-    getLocalTime(&timeinfo);
-    char buffer[20];
-    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &timeinfo);
-    String date = String(buffer);
-
-    HTTPClient http;
-
-    //URL complète
-    String url = "http://aquatrackapi.ir.lan/aqr/116/obs";
-    http.begin(url);
-
-    //Header JSON
-    http.addHeader("Content-Type", "application/json");
-
-    //Corps de la requète
-    StaticJsonDocument<200> doc;
-    doc["texte"] = "test nourrissage";
-    doc["date"] = date;
-
-    String requestBody;
-    serializeJson(doc, requestBody);
-
-    //Envoi POST
-    int httpResponseCode = http.POST(requestBody);
-
-    if (httpResponseCode > 0) {
-        Serial.print("Code HTTP : ");
-        Serial.println(httpResponseCode);
-
-        String response = http.getString();
-        Serial.println("Réponse : " + response);
-    } else {
-        Serial.print("Erreur requète : ");
-        Serial.println(httpResponseCode);
+    if (intervalle > 0) {
+        Serial.println(intervalle);
+    }
+    else {
+        Serial.println("Erreur récupération intervalle");
     }
 
-    http.end();
+    loginApi();
 }
 
 void loop() {
-    loginApi();
-    envoiAPI();
-    delay(30000);
+    // moteur arrêté sur contacteur
+    if (etat_moteur == 2) {
+        if (millis() - temps_cycle >= (getIntervalle())*1000) {
+            digitalWrite(ENA,HIGH);
+            digitalWrite(IN1,LOW);
+            digitalWrite(IN2,HIGH);
+            etat_moteur = 0;
+        }
+    }
+
+    // quitter le contacteur
+    if (etat_moteur == 0) {
+        if (digitalRead(CONTACTEUR) == HIGH) {
+            etat_moteur = 1;
+        }
+    }
+
+    // moteur en rotation
+    if (etat_moteur == 1) {
+        if (digitalRead(CONTACTEUR) == LOW) {
+            temps_rebond = millis();
+            etat_moteur = 3;
+        }
+    }
+
+    // anti rebond
+    if (etat_moteur == 3) {
+        if (millis() - temps_rebond > 30) {
+            if (digitalRead(CONTACTEUR) == LOW) {
+                digitalWrite(IN1,LOW);
+                digitalWrite(IN2,LOW);
+                temps_cycle = millis();  //reset du timer
+                etat_moteur = 2;
+            }
+            else {
+                etat_moteur = 1;
+            }
+        }
+    }
 }
