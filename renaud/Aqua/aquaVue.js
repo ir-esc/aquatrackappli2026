@@ -5,6 +5,14 @@ function afficherAquariums() {
     body: {
       rows:[
         {
+          view:"toolbar",
+          cols:[
+            {
+              view:"button", value:"Déconnexion", css:"webix_danger", inputWidth:110
+            }
+          ]
+        },
+        {
           // affiche les aquariums et leurs données de l'API dans une datatable
           view:"datatable",
           id:"aquaTable",
