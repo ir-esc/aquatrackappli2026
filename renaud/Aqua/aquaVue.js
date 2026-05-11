@@ -65,4 +65,6 @@ webix.ready(function(){
   webix.ajax()
     .headers({"Content-Type":"application/json"})
     .post("https://aquatrackapi.ir.lan/log",JSON.stringify({"email": "Alex@ir.lan","motdepasse": "Alex1234"}),afficherAquariums);
+    //.post("https://aquatrackapi.ir.lan/log",JSON.stringify({"email": "anna@ir.lan","motdepasse": "Anna1234"}),afficherAquariums);
+    //.post("https://aquatrackapi.ir.lan/log",JSON.stringify({"email": "paul@ir.lan","motdepasse": "Paul1234"}),afficherAquariums);
 });
