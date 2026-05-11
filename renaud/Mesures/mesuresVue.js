@@ -246,7 +246,18 @@ webix.ready(function(){
             template: "#valeur#"
           }
         }
-      }
+      },
+      {
+          view:"toolbar",
+          cols:[
+            {
+              view:"button", value:"Ajouter une mesure", css:"webix_primary", height:50
+            },
+            {
+              view:"button", value:"Supprimer une mesure", css:"webix_danger", height:50
+            }
+          ]
+        }
     ]
   });
   // Récupère l'ID de l'aquarium depuis l'URL
