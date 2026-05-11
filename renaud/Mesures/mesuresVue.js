@@ -7,7 +7,28 @@ webix.ready(function(){
   webix.ui({
     // mets les mesures dans un accordéon
     view:"accordion",
-    rows:[ 
+    rows:[
+      {
+        view: "toolbar",
+        elements: [
+          {
+            view:"button", type: "icon", icon: "mdi mdi-arrow-left", css:"webix_danger", inputWidth: 50
+          },
+          {},
+          {
+            view: "icon", icon: "mdi mdi-menu",
+            popup: {
+              view: "contextmenu",
+              data: [
+                {value: "Photos"},
+                {value: "Journal de bord"},
+                {value: "Modules"},
+                {value: "Nourrissage"},
+              ]
+            }
+          }
+        ]
+      }, 
       {
         view:"accordionitem",
         header:"Température",
@@ -243,21 +264,21 @@ webix.ready(function(){
           },
           // affiche la valeur dans une infobulle au survol du point avec la souris
           tooltip:{
-            template: "#valeur#"
+            template: function(obj){ return formatValeur(obj.valeur); }
           }
         }
       },
       {
-          view:"toolbar",
-          cols:[
-            {
-              view:"button", value:"Ajouter une mesure", css:"webix_primary", height:50
-            },
-            {
-              view:"button", value:"Supprimer une mesure", css:"webix_danger", height:50
-            }
-          ]
-        }
+        view:"toolbar",
+        cols:[
+          {
+            view:"button", value:"Ajouter une mesure", css:"webix_primary", height:50
+          },
+          {
+            view:"button", value:"Supprimer une mesure", css:"webix_danger", height:50
+          }
+        ]
+      }
     ]
   });
   // Récupère l'ID de l'aquarium depuis l'URL
