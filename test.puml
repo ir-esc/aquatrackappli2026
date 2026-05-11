@@ -1,4 +1,5 @@
 @startuml
+skinparam dpi 300
 title Diagramme de séquence général - Aquatrack
 
 skinparam actorStyle awesome
@@ -38,13 +39,14 @@ WebApp --> Utilisateur : Afficher les informations
 deactivate WebApp
 
 == Remontée des données des modules ==
-
-Modules -> API : Envoyer mesures, photos\nou états
-activate Modules #LightBlue
-activate API #LightBlue
-API --> Modules : Confirmer la réception
-deactivate API
-deactivate Modules
+loop Remontée périodique
+    Modules -> API : Envoyer mesures, photos\nou états
+    activate Modules #LightBlue
+    activate API #LightBlue
+    API --> Modules : Confirmer la réception
+    deactivate API
+    deactivate Modules
+end
 
 == Configuration / pilotage ==
 Utilisateur -> WebApp : Modifier un paramètre\nou piloter un module

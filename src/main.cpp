@@ -58,8 +58,8 @@ void startCamera() {
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG;
-    config.frame_size = FRAMESIZE_QVGA; // liste des formats disponibles ici: FRAMESIZE_QVGA, FRAMESIZE_VGA, FRAMESIZE_SVGA, FRAMESIZE_XGA, FRAMESIZE_SXGA
-    config.jpeg_quality = 12; // 0-63 lower means higher quality
+    config.frame_size = FRAMESIZE_XGA; // liste des formats disponibles ici: FRAMESIZE_QVGA, FRAMESIZE_VGA, FRAMESIZE_SVGA, FRAMESIZE_XGA, FRAMESIZE_SXGA
+    config.jpeg_quality = 20; // 0-63 lower means higher quality
     config.fb_count = 1;
 
     if (esp_camera_init(&config) != ESP_OK) {
@@ -75,8 +75,9 @@ void prendrePhoto() {
         return;
     }
     int obsId = createObservation();
-    Serial.println("observation créee");
+   
     if (obsId > 0) {
+        Serial.println("observation créee");
         addMediaToObservation(obsId, fb);
         Serial.println("Média ajoutée a l'observation");
     }
@@ -138,7 +139,7 @@ void loop() {
         delay(500);
     }
 
-    // Fetch config toutes les 30s pour être sûr d'avoir la config à jour, même si l'API ne supporte pas le long polling ou les websockets
+    // Fetch config toutes les 30s pour être sûr d'avoir la config à jour
     if (millis() - last_config_fetch >= 30000) {
         last_config_fetch = millis();
         fetchConfig();

@@ -12,7 +12,7 @@ Scheduler::Scheduler() {
 }
 // Parse la config reçue de l'API et met à jour les paramètres du scheduler
 void Scheduler::parseConfig(String configStr) {
-    DynamicJsonDocument doc(256);
+    DynamicJsonDocument doc(512);
     if (deserializeJson(doc, configStr) != DeserializationError::Ok) {
         Serial.println("Erreur parsing config");
         return;

@@ -4,14 +4,13 @@
 #include <ArduinoJson.h>
 #include "Wifi_handling.h"
 
-const char* server = "aquatrackapi.ir.lan"; 
-const int aquariumId = 116; // ID de ton aquarium
+const int aquariumId = 116; // ID de l'aquarium
 
 // ================== Création de l'observation ==================
 int createObservation() {
     WiFiClient client; // On utilise WiFiClient directement pour mieux contrôler la requête et lire la réponse complète
 
-    if (!client.connect("aquatrackapi.ir.lan", 80)) {
+    if (!client.connect("192.168.63.44", 80)) {
         Serial.println("Connexion échouée");
         return -1;
     }
@@ -23,7 +22,7 @@ int createObservation() {
     strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S.000Z", &timeinfo); // Format ISO 8601 attendu par l'API
     String date = String(buffer);
 
-    String body = "{\"texte\":\"Photo ESP32\",\"date\":\"" + date + "\"}";
+    String body = "{\"texte\":\"Photo auto ESP32\",\"date\":\"" + date + "\"}";
 
     client.println("POST /aqr/" + String(aquariumId) + "/obs HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
@@ -73,7 +72,7 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
     int port = 80;
     String boundary = "----ESP32CamBoundary"; // Boundary pour multipart/form-data explique : https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type#multipartform-data
 
-    if (!client.connect(server, port)) {
+    if (!client.connect("192.168.63.44", 80)) {
         Serial.println("Connexion échouée");
         return;
     }
