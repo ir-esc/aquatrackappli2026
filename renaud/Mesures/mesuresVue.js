@@ -15,7 +15,7 @@ webix.ready(function () {
               window.location.href = "../Aqua/aqua.html";
             }
           },
-          {},
+          {template:"Mesures", borderless: true},
           {
             view: "icon", icon: "mdi mdi-menu",
             popup: {
