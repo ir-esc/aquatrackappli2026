@@ -46,158 +46,44 @@ Aquatrack/ (Module ESP32-CAM uniquement)
 
 ### Matériel Requis
 
-- **Microcontrôleur** : ESP32-CAM (avec caméra OV2640 intégrée)
-- **Alimentation** : 5V stable (via micro USB ou alimentation externe 5V)
-- **Réseau** : Accès WiFi au même réseau que l'API backend
-- **Développement** : Cable USB pour transmission de données (modification du code via PlatformIO)
+- Microcontrôleur : ESP32-CAM (avec caméra OV2640 intégrée)
+- Alimentation : 5V stable (via micro USB ou alimentation externe 5V)
+- Réseau : Accès WiFi au même réseau que l'API backend
 
 ### Prérequis Logiciels (pour modifier le code)
 
-1. **PlatformIO** : Framework et IDE pour développement microcontrôleur
-2. **VS Code** : Éditeur avec extension PlatformIO installée
-3. **Python** : Requis par PlatformIO (généralement inclus)
-4. **Drivers USB** : Pour communication avec l'ESP32 via cable USB
+1. PlatformIO avec l'extension VS Code
+
 
 ### Dépendances
 
-Le projet utilise **une seule dépendance externe** :
-- **ArduinoJson** v7.x (disponible via PlatformIO)
+Le projet utilise ArduinoJson (déclaré dans `platformio.ini`).
 
-### Variables de Configuration dans `platformio.ini`
+### Variables de Configuration
 
-```ini
-[env:esp32cam]
-platform = espressif32
-board = esp32cam
-framework = arduino
-monitor_speed = 115200
-upload_speed = 115200
-lib_deps = bblanchon/ArduinoJson
-```
-
-### Configuration WiFi (dans `src/Wifi_handling.cpp`)
-
-Modifiez ces valeurs pour votre réseau :
-
-```cpp
-const char* ssid = "IRO";           // Nom du réseau WiFi
-const char* password = "Cirrus=14014"; // Mot de passe WiFi
-```
-
-### Configuration API (dans `src/Photo_sending.cpp` et autres)
-
-```cpp
-const char* server = "aquatrackapi.ir.lan"; // Serveur API
-const int aquariumId = 116;                  // ID de votre aquarium
-```
-
-### Identifiants API (dans `src/LOGIN_Handling.cpp`)
-
-```cpp
-String body = "{\"email\":\"Alex@ir.lan\",\"motdepasse\":\"Alex1234\"}";
-```
-
-**⚠️ IMPORTANT** : Créez un utilisateur spécial dans l'API pour l'ESP32 et remplacez ces identifiants !
+Les paramètres réseau et API sont définis dans les sources :
+- WiFi : `src/Wifi_handling.cpp`
+- API host/port : `src/Photo_sending.cpp` et `src/LOGIN_Handling.cpp`
 
 ---
 
 ## 📊 Architecture Fonctionnelle
 
-### Flux de Données
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      BOUCLE PRINCIPALE                           │
-└─────────────────────────────────────────────────────────────────┘
-                               │
-                    ┌──────────┴──────────┐
-                    │                     │
-        ┌───────────▼──────────┐  ┌──────▼─────────┐
-        │ 1. WIFI & NTP        │  │ 2. AUTHENTIF   │
-        │ - Connexion WiFi     │  │ - loginAPI()   │
-        │ - Récupérer heure    │  │ - Récup Cookie │
-        └─────────┬────────────┘  └────────┬────────┘
-                  │                         │
-        ┌─────────▼────────────┐     ┌─────▼──────────────┐
-        │ 3. CONFIG FETCHER    │     │ 4. SCHEDULER      │
-        │ - Récup config API   │────▶│ - Analyse config  │
-        │ - Mode: interval     │     │ - Mode interval   │
-        │  ou schedule         │     │  ou schedule      │
-        └──────────┬───────────┘     └─────┬─────────────┘
-                   │                        │
-                   └────────────┬───────────┘
-                                │
-                    ┌───────────▼──────────┐
-                    │ 5. PHOTO CAPTURE    │
-                    │ - Verif scheduler   │
-                    │ - prendrePhoto()    │
-                    └─────────┬────────────┘
-                              │
-                    ┌─────────▼──────────┐
-                    │ 6. PHOTO SENDING   │
-                    │ - Création obs.    │
-                    │ - Envoi multipart  │
-                    └────────────────────┘
-```
+Ce firmware suit une boucle principale : connexion WiFi/NTP → authentification → récupération de configuration → prise de photos selon scheduler → envoi des médias à l'API.
 
 ---
 
-## 📝 Description des Modules
+## 📝 Modules principaux
 
-### 1️⃣ **Wifi_handling.cpp / Wifi_handling.h**
-
-**Responsabilité** : Gérer la connexion WiFi et l'horloge réseau (NTP)
-
-#### Fonctions principales :
-- `initWiFi()` : Initialise la connexion WiFi et configure le serveur NTP (Network Time Protocol)
-
-#### Points clés :
-- Se connecte au réseau WiFi defini
-- Configure l'horloge interne via NTP (`pool.ntp.org`)
-- Lance un serveur local sur le port 80 (non utilisé actuellement)
-- Vérifie que l'heure est correcte avant de continuer (timeout 10s)
-
-#### Variables globales :
-```cpp
-String sessionCookie = "";    // Stocke le cookie de session pour les requêtes authentifiées
-WiFiServer localserver(80);   // Serveur local (futur usage possible)
-```
+- `Wifi_handling.*`: connexion WiFi et synchronisation NTP
+- `LOGIN_Handling.*`: authentification et stockage de cookie de session
+- `Config_Fetcher.*`: récupération de configuration depuis l'API
+- `Scheduler.*`: logique de planification (interval ou schedule)
+- `Photo_sending.*`: création d'observation et upload d'images
 
 ---
 
-### 2️⃣ **LOGIN_Handling.cpp / LOGIN_Handling.h**
-
-**Responsabilité** : Authentifier l'ESP32 auprès de l'API backend
-
-#### Fonctions principales :
-- `loginAPI()` : Envoie les identifiants à l'API et récupère un cookie de session
-
-#### Détails techniques :
-- Effectue une requête **POST** vers `/log` avec credentials JSON
-- Extrait le cookie de session `ci_session` de la réponse HTTP
-- Stocke le cookie dans la variable globale `sessionCookie`
-- Le cookie est utilisé pour toutes les requêtes authentifiées suivantes
-
-#### Exemple de requête :
-```
-POST /log HTTP/1.1
-Host: aquatrackapi.ir.lan
-Content-Type: application/json
-
-{"email":"Alex@ir.lan","motdepasse":"Alex1234"}
-```
-
----
-
-### 3️⃣ **Config_Fetcher.cpp / Config_Fetcher.h**
-
-**Responsabilité** : Récupérer la configuration du scheduler depuis l'API
-
-#### Fonctions principales :
-- `fetchConfig()` : Récupère la configuration depuis l'API et la transmet au scheduler
-
-#### Processus :
-1. Effectue une requête **GET** vers `/mod/{moduleId}`
+Pour démarrer : ouvrez le projet avec PlatformIO/VS Code, ajustez les identifiants WiFi et API dans les fichiers mentionnés, puis compilez et téléversez sur l'ESP32-CAM.
 2. Parse la réponse JSON pour extraire le champ `config`
 3. Transmet cette configuration au `Scheduler` qui la parse
 

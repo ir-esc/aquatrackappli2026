@@ -22,7 +22,7 @@ int createObservation() {
     strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S.000Z", &timeinfo); // Format ISO 8601 attendu par l'API
     String date = String(buffer);
 
-    String body = "{\"texte\":\"Photo auto ESP32\",\"date\":\"" + date + "\"}";
+    String body = "{\"texte\":\"Photo automatique ESP32\",\"date\":\"" + date + "\"}";
 
     client.println("POST /aqr/" + String(aquariumId) + "/obs HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
