@@ -1,6 +1,7 @@
 webix.ready(function () {
     webix.ui({
         rows: [
+            // Barre de navigation avec un bouton de retour et un menu
             {
                 view: "toolbar",
                 elements: [
@@ -42,6 +43,7 @@ webix.ready(function () {
                     }
                 ]
             },
+            // Sélection des jours de la semaine pour le nourrissage
             {
                 view: "datatable",
                 id: "nourrissageTable",
@@ -62,15 +64,21 @@ webix.ready(function () {
                 multiselect: "touch",
                 scrollX: false
             },
+            // Sélection de l'heure de nourrissage
             {
                 view: "timeboard",
                 id: "tBoard",
-                value: "6:45",
+                height: 150,
+                value: "12:30",
                 twelve: false
+            },
+            {
+                view: "button", value: "Valider les choix", css: "webix_primary", align: "center", height: 55
             }
         ]
     });
 
+    // Modifie le titre du slider du timeboard de Hours en Heures
     let tSliders = $$("tBoard").queryView({ view: "slider" }, "all");
     tSliders[0].define("title", "Heures");
     tSliders[0].refresh();
