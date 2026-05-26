@@ -1,4 +1,8 @@
 webix.ready(function () {
+    // Récupère l'ID de l'aquarium depuis l'URL
+    var urlParams = new URLSearchParams(window.location.search);
+    var aquariumId = urlParams.get('id');
+
     webix.ui({
         rows: [
             // Barre de navigation avec un bouton de retour et un menu
@@ -49,7 +53,7 @@ webix.ready(function () {
                 id: "nourrissageTable",
                 height: 295,
                 columns: [
-                    { id: "jour", header: "Jours de la semaine", align: "center", fillspace: true },
+                    { id: "jour", header: "Jours de la semaine", fillspace: true },
                 ],
                 data: [
                     { id: 1, jour: "Lundi" },
@@ -73,6 +77,13 @@ webix.ready(function () {
                 twelve: false
             },
             {
+                view: "timeboard",
+                id: "tBoard2",
+                height: 150,
+                value: "12:30",
+                twelve: false
+            },
+            {
                 view: "button", value: "Valider les choix", css: "webix_primary", align: "center", height: 55
             }
         ]
@@ -82,8 +93,7 @@ webix.ready(function () {
     let tSliders = $$("tBoard").queryView({ view: "slider" }, "all");
     tSliders[0].define("title", "Heures");
     tSliders[0].refresh();
-
-    // Récupère l'ID de l'aquarium depuis l'URL
-    var urlParams = new URLSearchParams(window.location.search);
-    var aquariumId = urlParams.get('id');
+    let tSliders2 = $$("tBoard2").queryView({ view: "slider" }, "all");
+    tSliders2[0].define("title", "Heures");
+    tSliders2[0].refresh();
 });
