@@ -4,9 +4,8 @@ function afficherAquariums() {
       {
         view: "toolbar",
         cols: [
-          {
-            view: "button", value: "Déconnexion", css: "webix_danger", inputWidth: 110
-          }
+          { view: "button", value: "Déconnexion", css: "webix_danger", inputWidth: 110 },
+          { template: "Mes aquariums", type: "header", borderless: true },
         ]
       },
       {

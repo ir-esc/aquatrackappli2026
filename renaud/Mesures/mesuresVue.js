@@ -15,7 +15,7 @@ webix.ready(function () {
               window.location.href = "../Aqua/aqua.html";
             }
           },
-          { template: "Mesures", borderless: true },
+          { template: "Mesures", type: "header", borderless: true },
           {
             view: "icon", icon: "mdi mdi-menu",
             popup: {
@@ -30,7 +30,16 @@ webix.ready(function () {
               on: {
                 onItemClick: function (id) {
                   var item = this.getItem(id);
-                  if (item && item.value === "Nourrissage") {
+                  if (item && item.value === "Photos") {
+                    window.location.href = "../Photos/photos.html";
+                  }
+                  else if (item && item.value === "Journal de bord") {
+                    window.location.href = "../Journal/journal.html";
+                  }
+                  else if (item && item.value === "Modules") {
+                    window.location.href = "../Modules/modules.html";
+                  }
+                  else if (item && item.value === "Nourrissage") {
                     window.location.href = "../Nourrissage/nourrissage.html";
                   }
                 }
