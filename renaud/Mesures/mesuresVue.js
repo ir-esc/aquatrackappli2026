@@ -73,7 +73,7 @@ webix.ready(function () {
                 end: 40,
                 step: 5,
               },
-              // affiche la valeur dans une infobulle au survol du point avec la souris
+              // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
               tooltip: {
                 template: function (obj) { return formatValeur(obj.valeur); }
               }
@@ -104,7 +104,7 @@ webix.ready(function () {
                   return obj % 7 ? "" : obj;
                 }
               },
-              // affiche la valeur dans une infobulle au survol du point avec la souris
+              // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
               tooltip: {
                 template: function (obj) { return formatValeur(obj.valeur); }
               }
@@ -135,7 +135,7 @@ webix.ready(function () {
                   return obj % 6 ? "" : obj;
                 }
               },
-              // affiche la valeur dans une infobulle au survol du point avec la souris
+              // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
               tooltip: {
                 template: function (obj) { return formatValeur(obj.valeur); }
               }
@@ -166,7 +166,7 @@ webix.ready(function () {
                   return obj % 5 ? "" : obj;
                 }
               },
-              // affiche la valeur dans une infobulle au survol du point avec la souris
+              // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
               tooltip: {
                 template: function (obj) { return formatValeur(obj.valeur); }
               }
@@ -194,7 +194,7 @@ webix.ready(function () {
                 end: 1,
                 step: 0.1,
               },
-              // affiche la valeur dans une infobulle au survol du point avec la souris
+              // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
               tooltip: {
                 template: function (obj) { return formatValeur(obj.valeur); }
               }
@@ -225,7 +225,7 @@ webix.ready(function () {
                   return obj % 10 ? "" : obj;
                 }
               },
-              // affiche la valeur dans une infobulle au survol du point avec la souris
+              // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
               tooltip: {
                 template: function (obj) { return formatValeur(obj.valeur); }
               }
@@ -253,7 +253,7 @@ webix.ready(function () {
                 end: 0.5,
                 step: 0.05,
               },
-              // affiche la valeur dans une infobulle au survol du point avec la souris
+              // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
               tooltip: {
                 template: function (obj) { return formatValeur(obj.valeur); }
               }
@@ -284,7 +284,7 @@ webix.ready(function () {
                   return obj % 200 ? "" : obj;
                 }
               },
-              // affiche la valeur dans une infobulle au survol du point avec la souris
+              // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
               tooltip: {
                 template: function (obj) { return formatValeur(obj.valeur); }
               }
@@ -305,6 +305,7 @@ webix.ready(function () {
       }
     ]
   });
+  
   // Récupère l'ID de l'aquarium depuis l'URL
   var urlParams = new URLSearchParams(window.location.search);
   var aquariumId = urlParams.get('id');
