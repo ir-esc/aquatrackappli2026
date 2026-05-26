@@ -64,11 +64,16 @@ webix.ready(function () {
             },
             {
                 view: "timeboard",
+                id: "tBoard",
                 value: "6:45",
                 twelve: false
             }
         ]
     });
+
+    let tSliders = $$("tBoard").queryView({ view: "slider" }, "all");
+    tSliders[0].define("title", "Heures");
+    tSliders[0].refresh();
 
     // Récupère l'ID de l'aquarium depuis l'URL
     var urlParams = new URLSearchParams(window.location.search);

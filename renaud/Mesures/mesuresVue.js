@@ -305,7 +305,7 @@ webix.ready(function () {
       }
     ]
   });
-  
+
   // Récupère l'ID de l'aquarium depuis l'URL
   var urlParams = new URLSearchParams(window.location.search);
   var aquariumId = urlParams.get('id');
