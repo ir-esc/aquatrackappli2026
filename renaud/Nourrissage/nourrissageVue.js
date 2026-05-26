@@ -9,7 +9,7 @@ webix.ready(function () {
                             window.location.href = "../Aqua/aqua.html";
                         }
                     },
-                    {},
+                    { template: "Nourrissage", borderless: true },
                     {
                         view: "icon", icon: "mdi mdi-menu",
                         popup: {
@@ -19,7 +19,16 @@ webix.ready(function () {
                                 { value: "Photos" },
                                 { value: "Journal de bord" },
                                 { value: "Modules" },
-                            ]
+                                //{ value: "Nourrissage" }
+                            ],
+                            on: {
+                                onItemClick: function (id) {
+                                    var item = this.getItem(id);
+                                    if (item && item.value === "Mesures") {
+                                        window.location.href = "../Mesures/mesures.html";
+                                    }
+                                }
+                            }
                         }
                     }
                 ]

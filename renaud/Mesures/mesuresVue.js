@@ -21,11 +21,20 @@ webix.ready(function () {
             popup: {
               view: "contextmenu",
               data: [
+                //{ value: "Mesures" },
                 { value: "Photos" },
                 { value: "Journal de bord" },
                 { value: "Modules" },
-                { value: "Nourrissage" },
-              ]
+                { value: "Nourrissage" }
+              ],
+              on: {
+                onItemClick: function (id) {
+                  var item = this.getItem(id);
+                  if (item && item.value === "Nourrissage") {
+                    window.location.href = "../Nourrissage/nourrissage.html";
+                  }
+                }
+              }
             }
           }
         ]
