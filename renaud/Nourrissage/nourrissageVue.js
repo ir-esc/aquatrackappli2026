@@ -43,15 +43,33 @@ webix.ready(function () {
                 ]
             },
             {
-                weekHeader: true,
-                view: "calendar",
-                events: webix.Date.isHoliday,
-                timepicker: true,
-                icons: true
+                view: "datatable",
+                id: "nourrissageTable",
+                height: 295,
+                columns: [
+                    { id: "jour", header: "Jours de la semaine", align: "center", fillspace: true },
+                ],
+                data: [
+                    { id: 1, jour: "Lundi" },
+                    { id: 2, jour: "Mardi" },
+                    { id: 3, jour: "Mercredi" },
+                    { id: 4, jour: "Jeudi" },
+                    { id: 5, jour: "Vendredi" },
+                    { id: 6, jour: "Samedi" },
+                    { id: 7, jour: "Dimanche" }
+                ],
+                select: "row",
+                multiselect: "touch",
+                scrollX: false
+            },
+            {
+                view: "timeboard",
+                value: "6:45",
+                twelve: false
             }
         ]
     });
-    
+
     // Récupère l'ID de l'aquarium depuis l'URL
     var urlParams = new URLSearchParams(window.location.search);
     var aquariumId = urlParams.get('id');
