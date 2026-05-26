@@ -76,11 +76,31 @@ webix.ready(function () {
                 value: "12:30",
                 twelve: false
             },
+            // Bouton pour ajouter ou enlever une heure de nourrissage
+            {
+                view: "button",
+                id: "toggleTBoard2",
+                value: "Ajouter une heure de nourrissage",
+                css: "webix_primary",
+                align: "center",
+                width: 300,
+                click: function () {
+                    var tb2 = $$("tBoard2");
+                    if (tb2.isVisible && tb2.isVisible()) {
+                        tb2.hide();
+                        this.setValue("Ajouter une heure de nourrissage");
+                    } else {
+                        tb2.show();
+                        this.setValue("Enlever une heure de nourrissage");
+                    }
+                }
+            },
+            // Deuxième selection de l'heure de nourrissage
             {
                 view: "timeboard",
                 id: "tBoard2",
                 height: 150,
-                value: "12:30",
+                value: "00:00",
                 twelve: false
             },
             {
@@ -88,6 +108,9 @@ webix.ready(function () {
             }
         ]
     });
+
+    // Cache la deuxième selection de l'heure
+    $$("tBoard2").hide();
 
     // Modifie le titre du slider du timeboard de Hours en Heures
     let tSliders = $$("tBoard").queryView({ view: "slider" }, "all");
