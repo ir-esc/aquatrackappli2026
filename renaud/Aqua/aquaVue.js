@@ -65,12 +65,12 @@ function afficherAquariums() {
   });
 }
 
-// autorise les requêtes AJAX à inclure les cookies pour l'authentification
-webix.attachEvent("onBeforeAjax", function (mode, url, data, request) {
-  request.withCredentials = true;
-});
-
 webix.ready(function () {
+  // autorise les requêtes AJAX à inclure les cookies pour l'authentification
+  webix.attachEvent("onBeforeAjax", function (mode, url, data, request) {
+    request.withCredentials = true;
+  });
+
   // envoie une requête POST à l'API pour se connecter avec les informations d'identification
   webix.ajax()
     .headers({ "Content-Type": "application/json" })

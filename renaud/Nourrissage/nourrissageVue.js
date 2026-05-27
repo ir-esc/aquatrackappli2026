@@ -74,6 +74,7 @@ webix.ready(function () {
                 id: "tBoard",
                 height: 150,
                 value: "12:30",
+                borderless: true,
                 twelve: false
             },
             // Bouton pour ajouter ou enlever une heure de nourrissage
@@ -101,10 +102,34 @@ webix.ready(function () {
                 id: "tBoard2",
                 height: 150,
                 value: "00:00",
+                borderless: true,
                 twelve: false
             },
+            // Bouton pour valider les choix de jours et d'heures de nourrissage
             {
-                view: "button", value: "Valider les choix", css: "webix_primary", align: "center", height: 55
+                view: "button", value: "Valider les choix", css: "webix_primary", align: "center", height: 55, click: function () {
+                    // Récupère les jours sélectionnés
+                    var selected = $$("nourrissageTable").getSelectedId(true).join()
+                    // Récupère la première heure sélectionnée
+                    var tBoard1Value = $$("tBoard").getValue()
+                    var heures1 = tBoard1Value.getHours() 
+                    var minutes1 = tBoard1Value.getMinutes()
+                    // Récupère la deuxième heure sélectionnée
+                    var tBoard2Value = $$("tBoard2").getValue()
+                    var heures2 = tBoard2Value.getHours()
+                    var minutes2 = tBoard2Value.getMinutes()
+                    if (selected) {
+                        webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Première heure : " + heures1 + "h" + minutes1
+                            + "<br> Deuxième heure : " + heures2 + "h" + minutes2
+                        );
+                    }
+                    else {
+                        webix.message("Intervalle de nourrissage : " + heures1 + "h" + minutes1);
+                    }
+                }
+            },
+            {
+                template: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours.", borderless: true
             }
         ]
     });
