@@ -41,9 +41,9 @@ function afficherAquariums() {
           {
             // redirige vers la page de mesures de l'aquarium sélectionné
             view: "button", value: "Voir", css: "webix_secondary", height: 50, click: function () {
-              var selected = $$("aquaTable").getSelectedItem()
-              if (selected && selected.id) {
-                window.location.href = "../Mesures/mesures.html?id=" + selected.id;
+              var selected = $$("aquaTable").getSelectedId(true).join();
+              if (selected) {
+                window.location.href = "../Mesures/mesures.html?id=" + selected;
               }
               else {
                 webix.alert("Veuillez sélectionner un aquarium");

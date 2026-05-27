@@ -69,16 +69,16 @@ webix.ready(function () {
               on: {
                 onItemClick: function (id) {
                   var item = this.getItem(id);
-                  if (item && item.value === "Photos") {
+                  if (item.value == "Photos") {
                     window.location.href = "../Photos/photos.html?id=" + aquariumId;
                   }
-                  else if (item && item.value === "Journal de bord") {
+                  else if (item.value == "Journal de bord") {
                     window.location.href = "../Journal/journal.html?id=" + aquariumId;
                   }
-                  else if (item && item.value === "Modules") {
+                  else if (item.value == "Modules") {
                     window.location.href = "../Modules/modules.html?id=" + aquariumId;
                   }
-                  else if (item && item.value === "Nourrissage") {
+                  else if (item.value == "Nourrissage") {
                     window.location.href = "../Nourrissage/nourrissage.html?id=" + aquariumId;
                   }
                 }
