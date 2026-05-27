@@ -66,7 +66,17 @@ webix.ready(function () {
                 ],
                 select: "row",
                 multiselect: "touch",
-                scrollX: false
+                scrollX: false,
+                on: {
+                    onSelectChange: function () {
+                        const Selection = this.getSelectedId(true).length > 0;
+
+                        if (Selection)
+                            $$("toggleTBoard2").enable();
+                        else
+                            $$("toggleTBoard2").disable();
+                    }
+                }
             },
             // Sélection de l'heure ou de l'intervalle de nourrissage
             {
@@ -76,6 +86,16 @@ webix.ready(function () {
                 value: "12:30",
                 borderless: true,
                 twelve: false
+            },
+            // Deuxième selection de l'heure de nourrissage
+            {
+                view: "timeboard",
+                id: "tBoard2",
+                height: 150,
+                value: "00:00",
+                borderless: true,
+                twelve: false,
+                hidden: true
             },
             // Bouton pour ajouter ou enlever une deuxieme heure de nourrissage
             {
@@ -97,44 +117,41 @@ webix.ready(function () {
                     }
                 }
             },
-            // Deuxième selection de l'heure de nourrissage
-            {
-                view: "timeboard",
-                id: "tBoard2",
-                height: 150,
-                value: "00:00",
-                borderless: true,
-                twelve: false,
-                hidden: true
-            },
             // Bouton pour valider les choix de jours et d'heures de nourrissage
             {
                 view: "button", value: "Valider les choix", css: "webix_primary", align: "center", height: 55, click: function () {
+
                     // Récupère les jours sélectionnés
                     var selected = $$("nourrissageTable").getSelectedId(true).join()
-                    // Récupère la première heure sélectionnée
+
+                    // Récupère la première heure sélectionnée et la met dans le bon format
                     var tBoard1Value = $$("tBoard").getValue()
-                    var heures1 = tBoard1Value.getHours()
-                    var minutes1 = tBoard1Value.getMinutes()
-                    // Récupère la deuxième heure sélectionnée
+                    var h1 = tBoard1Value.getHours()
+                    if (h1 < 10) { h1 = "0" + h1 }
+                    var m1 = tBoard1Value.getMinutes()
+                    if (m1 < 10) { m1 = "0" + m1 }
+
+                    // Récupère la deuxième heure sélectionnée et la met dans le bon format
                     var tBoard2Value = $$("tBoard2").getValue()
-                    var heures2 = tBoard2Value.getHours()
-                    var minutes2 = tBoard2Value.getMinutes()
+                    var h2 = tBoard2Value.getHours()
+                    if (h2 < 10) { h2 = "0" + h2 }
+                    var m2 = tBoard2Value.getMinutes()
+                    if (m2 < 10) { m2 = "0" + m2 }
 
                     // Affiche les choix de jours et d'heures de nourrissage dans un message
                     if (selected) {
                         let tb2 = $$("tBoard2");
                         if (tb2.isVisible()) {
-                            webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Première heure : " + heures1 + "h" + minutes1
-                                + "<br> Deuxième heure : " + heures2 + "h" + minutes2
+                            webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Première heure : " + h1 + "h" + m1
+                                + "<br> Deuxième heure : " + h2 + "h" + m2
                             );
                         }
                         else {
-                            webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Heure de nourrissage : " + heures1 + "h" + minutes1);
+                            webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Heure de nourrissage : " + h1 + "h" + m1);
                         }
                     }
                     else {
-                        webix.message("Intervalle de nourrissage : " + heures1 + "h" + minutes1);
+                        webix.message("Intervalle de nourrissage : " + h1 + "h" + m1);
                     }
                 }
             },
@@ -144,7 +161,7 @@ webix.ready(function () {
         ]
     });
 
-    // Modifie le titre du slider du timeboard de Hours en Heures
+    // Modifie le titre du slider des timeboard de Hours en Heures
     let tSliders = $$("tBoard").queryView({ view: "slider" }, "all");
     tSliders[0].define("title", "Heures");
     tSliders[0].refresh();
