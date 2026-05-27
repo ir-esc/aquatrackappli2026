@@ -70,11 +70,14 @@ webix.ready(function () {
                 on: {
                     onSelectChange: function () {
                         const Selection = this.getSelectedId(true).length > 0;
-
-                        if (Selection)
+                        if (Selection) {
                             $$("toggleTBoard2").enable();
-                        else
+                        }
+                        else {
                             $$("toggleTBoard2").disable();
+                            $$("tBoard2").hide();
+                        }
+
                     }
                 }
             },
@@ -111,7 +114,8 @@ webix.ready(function () {
                     if (tb2.isVisible()) {
                         tb2.hide();
                         this.setValue("Ajouter une heure de nourrissage");
-                    } else {
+                    }
+                    else {
                         tb2.show();
                         this.setValue("Enlever une heure de nourrissage");
                     }
