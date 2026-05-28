@@ -6,7 +6,7 @@ webix.ready(function () {
 
   // récupère les données de l'API avec l'URL spécifiée pour l'aquarium sélectionné
   webix.ajax("https://aquatrackapi.ir.lan/aqr/" + aquariumId + "/ppc").then(function (data) {
-    const items = data.json();
+    var items = data.json();
     // filtre les mesures avec la date 0
     const filteredItems = items.filter(function (item) { return item.date !== "0000-00-00 00:00:00"; });
     // filtre les données par rapport au type de mesure

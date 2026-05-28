@@ -81,6 +81,7 @@ webix.ready(function () {
                     }
                 }
             },
+            { template: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours.", type: "header", height: 40 },
             // Sélection de l'heure ou de l'intervalle de nourrissage
             {
                 view: "timeboard",
@@ -145,22 +146,65 @@ webix.ready(function () {
                     // Affiche les choix de jours et d'heures de nourrissage dans un message
                     if (selected) {
                         let tb2 = $$("tBoard2");
+                        // Envoie les jours et les deux horaires
                         if (tb2.isVisible()) {
                             webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Première heure : " + h1 + "h" + m1
                                 + "<br> Deuxième heure : " + h2 + "h" + m2
                             );
+                            webix.ajax()
+                                .headers({ "Content-Type": "application/json" })
+                                .put("https://aquatrackapi.ir.lan/mod/9", JSON.stringify({
+                                    "id": "9",
+                                    "aquarium_id": "116",
+                                    "type": "nourrissage",
+                                    "statut": "actif",
+                                    "date_installation": "2026-05-26 00:00:00",
+                                    "module_uid": "erwan_nourrissage",
+                                    "config": "{\"horaires\":[{\"heure\":" + h1 + ",\"minute\":" + m1 + "},{\"heure\":" + h2 + ",\"minute\":" + m2 + "}]}",
+                                    "token_id": null
+                                }
+                                ));
                         }
                         else {
-                            webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Heure de nourrissage : " + h1 + "h" + m1);
+                            // Envoie les jours et le premier horaire
+                            webix.message(
+                                "Id jour(s) sélectionné(s) : " + selected + "<br> Heure de nourrissage : " + h1 + "h" + m1
+                            );
+                            webix.ajax()
+                                .headers({ "Content-Type": "application/json" })
+                                .put("https://aquatrackapi.ir.lan/mod/9", JSON.stringify({
+                                    "id": "9",
+                                    "aquarium_id": "116",
+                                    "type": "nourrissage",
+                                    "statut": "actif",
+                                    "date_installation": "2026-05-26 00:00:00",
+                                    "module_uid": "erwan_nourrissage",
+                                    "config": "{\"horaires\":[{\"heure\":" + h1 + ",\"minute\":" + m1 + "}",
+                                    "token_id": null
+                                }
+                                ));
                         }
                     }
                     else {
-                        webix.message("Intervalle de nourrissage : " + h1 + "h" + m1);
+                        // Envoie l'intervalle quand aucun jour est sellectionnés
+                        webix.message(
+                            "Intervalle de nourrissage : " + h1 + "h" + m1
+                        );
+                        webix.ajax()
+                            .headers({ "Content-Type": "application/json" })
+                            .put("https://aquatrackapi.ir.lan/mod/9", JSON.stringify({
+                                "id": "9",
+                                "aquarium_id": "116",
+                                "type": "nourrissage",
+                                "statut": "actif",
+                                "date_installation": "2026-05-26 00:00:00",
+                                "module_uid": "erwan_nourrissage",
+                                "config": "{\"intervalle\":" + h1 + "}",
+                                "token_id": null
+                            }
+                            ));
                     }
                 }
-            },
-            {
-                template: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours.", borderless: true
             }
         ]
     });
