@@ -1,6 +1,10 @@
+#include "Horaire.h"
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include "Horaire.h"
+
+Horaire horaires[MAX_HORAIRES];
+bool deja_declenche[MAX_HORAIRES];
+int nbHoraires = 0;
 
 void getHoraires() {
 
@@ -57,48 +61,52 @@ void getHoraires() {
     }
 
     // Récupération tableau horaires
-    JsonArray horaires = configDoc["horaires"];
+    JsonArray horairesJson = configDoc["horaires"];
 
     // Vérification présence horaires
-    if (horaires.isNull()) {
+    if (horairesJson.isNull()) {
         Serial.println("Champ horaires absent");
         return;
     }
 
     String horairesActuels = "";
 
-    // Lecture des horaires
-    for (JsonObject h : horaires) {
+    nbHoraires = 0;
 
+    // Lecture des horaires
+    for (JsonObject h : horairesJson) {
+        if (nbHoraires >= MAX_HORAIRES) {
+            Serial.println("Maximum horaires atteint");
+            break;
+        }
         // Récupération heure et minute
-        int heure = h["heure"];
-        int minute = h["minute"];
+        horaires[nbHoraires].heure = h["heure"];
+        horaires[nbHoraires].minute = h["minute"];
 
         // Construction chaîne horaires
-        horairesActuels += String(heure);
-        horairesActuels += "h";
-        horairesActuels += String(minute);
-        horairesActuels += " ";
+        horairesActuels +=
+            String(horaires[nbHoraires].heure)
+            + "h"
+            + String(horaires[nbHoraires].minute)
+            + " ";
+        nbHoraires++;
     }
 
     // Affichage seulement si changement
     if (horairesActuels != anciensHoraires) {
         Serial.println("Nouveaux horaires :");
         // Réaffichage détaillé
-        for (JsonObject h : horaires) {
-            int heure = h["heure"];
-            int minute = h["minute"];
+        for (int i = 0; i < nbHoraires; i++) {
             Serial.print("Horaire : ");
-            Serial.print(heure);
+            Serial.print(horaires[i].heure);
             Serial.print("h");
-            // Ajout d'un 0 devant les minutes si minute < 10
-            if (minute < 10) {
-                Serial.print("0");
-            }
-            Serial.println(minute);
-        }
 
+            // Ajout d'un 0 devant les minutes si minute < 10
+            if (horaires[i].minute < 10)
+                Serial.print("0");
+            Serial.println(horaires[i].minute);
+            deja_declenche[i] = false;
+        }
         anciensHoraires = horairesActuels;
     }
 }
-
