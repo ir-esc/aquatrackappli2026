@@ -81,13 +81,16 @@ webix.ready(function () {
                     }
                 }
             },
-            { template: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours.", type: "header", height: 40 },
+            { 
+                template: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours. Les minutes ne sont pas prisent en compte", 
+                type: "header", height: 40 
+            },
             // Sélection de l'heure ou de l'intervalle de nourrissage
             {
                 view: "timeboard",
                 id: "tBoard",
                 height: 150,
-                value: "12:30",
+                value: "00:00",
                 borderless: true,
                 twelve: false
             },
@@ -133,23 +136,18 @@ webix.ready(function () {
                     var tBoard1Value = $$("tBoard").getValue()
                     var h1 = tBoard1Value.getHours()
                     if (h1 < 10) { h1 = "0" + h1 }
-                    var m1 = tBoard1Value.getMinutes()
-                    if (m1 < 10) { m1 = "0" + m1 }
 
                     // Récupère la deuxième heure sélectionnée et la met dans le bon format
                     var tBoard2Value = $$("tBoard2").getValue()
                     var h2 = tBoard2Value.getHours()
                     if (h2 < 10) { h2 = "0" + h2 }
-                    var m2 = tBoard2Value.getMinutes()
-                    if (m2 < 10) { m2 = "0" + m2 }
 
                     // Affiche les choix de jours et d'heures de nourrissage dans un message
                     if (selected) {
                         let tb2 = $$("tBoard2");
                         // Envoie les jours et les deux horaires
                         if (tb2.isVisible()) {
-                            webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Première heure : " + h1 + "h" + m1
-                                + "<br> Deuxième heure : " + h2 + "h" + m2
+                            webix.message("Id jour(s) sélectionné(s) : " + selected + "<br> Première heure : " + h1 + "h00 <br> Deuxième heure : " + h2 + "h00"
                             );
                             webix.ajax()
                                 .headers({ "Content-Type": "application/json" })
@@ -160,7 +158,7 @@ webix.ready(function () {
                                     "statut": "actif",
                                     "date_installation": "2026-05-26 00:00:00",
                                     "module_uid": "erwan_nourrissage",
-                                    "config": "{\"horaires\":[{\"heure\":" + h1 + ",\"minute\":" + m1 + "},{\"heure\":" + h2 + ",\"minute\":" + m2 + "}]}",
+                                    "config": "{\"horaires\":[{\"heure\":" + h1 + "},{\"heure\":" + h2 + "}]}",
                                     "token_id": null
                                 }
                                 ));
@@ -168,7 +166,7 @@ webix.ready(function () {
                         else {
                             // Envoie les jours et le premier horaire
                             webix.message(
-                                "Id jour(s) sélectionné(s) : " + selected + "<br> Heure de nourrissage : " + h1 + "h" + m1
+                                "Id jour(s) sélectionné(s) : " + selected + "<br> Heure de nourrissage : " + h1 + "h00"
                             );
                             webix.ajax()
                                 .headers({ "Content-Type": "application/json" })
@@ -179,7 +177,7 @@ webix.ready(function () {
                                     "statut": "actif",
                                     "date_installation": "2026-05-26 00:00:00",
                                     "module_uid": "erwan_nourrissage",
-                                    "config": "{\"horaires\":[{\"heure\":" + h1 + ",\"minute\":" + m1 + "}",
+                                    "config": "{\"horaires\":[{\"heure\":" + h1 + "}]}",
                                     "token_id": null
                                 }
                                 ));
@@ -188,7 +186,7 @@ webix.ready(function () {
                     else {
                         // Envoie l'intervalle quand aucun jour est sellectionnés
                         webix.message(
-                            "Intervalle de nourrissage : " + h1 + "h" + m1
+                            "Intervalle de nourrissage : " + h1 + "h00"
                         );
                         webix.ajax()
                             .headers({ "Content-Type": "application/json" })
@@ -208,12 +206,4 @@ webix.ready(function () {
             }
         ]
     });
-
-    // Modifie le titre du slider des timeboard de Hours en Heures
-    let tSliders = $$("tBoard").queryView({ view: "slider" }, "all");
-    tSliders[0].define("title", "Heures");
-    tSliders[0].refresh();
-    let tSliders2 = $$("tBoard2").queryView({ view: "slider" }, "all");
-    tSliders2[0].define("title", "Heures");
-    tSliders2[0].refresh();
 });
