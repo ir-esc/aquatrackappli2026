@@ -1,5 +1,5 @@
-#ifndef HORAIRE_H
-#define HORAIRE_H
+#ifndef CONFIGAPI_H
+#define CONFIGAPI_H
 
 #include <Arduino.h>
 
@@ -11,9 +11,13 @@ struct Horaire {
 };
 
 extern Horaire horaires[MAX_HORAIRES];
-extern bool deja_declenche[MAX_HORAIRES];
 extern int nbHoraires;
 
-void getHoraires();
+extern int intervalle;
+
+extern bool modeIntervalle;
+extern bool modeHoraires;
+
+void getConfigModule();
 
 #endif

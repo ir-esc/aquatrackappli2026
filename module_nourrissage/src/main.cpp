@@ -5,7 +5,7 @@
 #include "wifi_config.h"
 #include "WifiManager.h"
 #include "Login.h"
-#include "Horaire.h"
+#include "ConfigAPI.h"
 
 int ENA = 25;
 int IN1 = 26;
@@ -15,8 +15,8 @@ int CONTACTEUR = 13;
 int etat_moteur = 2;
 
 unsigned long temps_rebond = 0;
-
-unsigned long dernierRefreshHoraires = 0;
+unsigned long temps_cycle = 0;
+unsigned long dernierRefresh = 0;
 
 // mémorisation du dernier nourrissage
 int derniereHeure = -1;
@@ -40,14 +40,14 @@ void setup() {
 
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
-    getHoraires();
+    getConfigModule();
 }
 
 void loop() {
     // rafraîchissement toutes les 30 secondes
-    if (millis() - dernierRefreshHoraires > 30000) {
+    if (millis() - dernierRefresh > 30000) {
         getHoraires();
-        dernierRefreshHoraires = millis();
+        dernierRefresh = millis();
     }
 
     struct tm timeinfo;
@@ -59,17 +59,29 @@ void loop() {
 
     // moteur arrêté
     if (etat_moteur == 2) {
-        for (int i = 0; i < nbHoraires; i++) {
-            bool deja_declenche = timeinfo.tm_hour == derniereHeure && timeinfo.tm_min == derniereMinute;
-            if (timeinfo.tm_hour == horaires[i].heure && timeinfo.tm_min == horaires[i].minute && !deja_declenche) {
+        // mode intervalle
+        if (modeIntervalle) {
+            if (millis() - temps_cycle >= intervalle * 1000) {
                 digitalWrite(ENA, HIGH);
                 digitalWrite(IN1, LOW);
                 digitalWrite(IN2, HIGH);
                 etat_moteur = 0;
+            }
+        }
+        // mode horaire
+        if (modeHoraires) {
+            for (int i = 0; i < nbHoraires; i++) {
+                bool deja_declenche = timeinfo.tm_hour == derniereHeure && timeinfo.tm_min == derniereMinute;
+                if (timeinfo.tm_hour == horaires[i].heure && timeinfo.tm_min == horaires[i].minute && !deja_declenche) {
+                    digitalWrite(ENA, HIGH);
+                    digitalWrite(IN1, LOW);
+                    digitalWrite(IN2, HIGH);
+                    etat_moteur = 0;
 
-                // mémorisation du dernier nourrissage
-                derniereHeure = timeinfo.tm_hour;
-                derniereMinute = timeinfo.tm_min;
+                    // mémorisation du dernier nourrissage
+                    derniereHeure = timeinfo.tm_hour;
+                    derniereMinute = timeinfo.tm_min;
+                }
             }
         }
     }
@@ -96,6 +108,7 @@ void loop() {
                 digitalWrite(IN1, LOW);
                 digitalWrite(IN2, LOW);
                 digitalWrite(ENA, LOW);
+                temps_cycle = millis();
 
                 etat_moteur = 2;
             }
