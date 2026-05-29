@@ -18,12 +18,13 @@ function afficherAquariums() {
               view: "datatable",
               id: "aquaTable",
               columns: [
-                { id: "media_id", header: "Image", width: 55, template: "<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='55' height='55'>" },
+                { id: "media_id", header: "Image", width: 70, template: "<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='55' height='55'>" },
+                { id: "id", header: "Id", width: 50},
                 { id: "nom", header: "Nom", fillspace: true },
                 { id: "user_id", header: "Propriétaire", width: 90 },
                 { id: "acces", header: "Accès", width: 90 },
                 { id: "volume", header: "Volume", width: 90 },
-                { id: "date", header: "Date de creation", width: 155 }
+                { id: "date", header: "Date de creation", width: 160 }
               ],
               // récupère les données de l'API avec l'URL spécifiée
               url: function (params) {
@@ -53,9 +54,23 @@ function afficherAquariums() {
           {
             view: "button", value: "Ajouter", css: "webix_primary", height: 50
           },
+          // bouton pour supprimer
           {
-            view: "button", value: "Supprimer", css: "webix_danger", height: 50
+            view: "button", value: "Supprimer", css: "webix_danger", height: 50, click: function () {
+              var selected = $$("aquaTable").getSelectedId(true).join();
+              if (selected) {
+                webix.confirm({
+                  text: "Voulez vous vraiment supprimer cet aquarium : " + selected,
+                  ok: "Oui",
+                  cancel: "Non"
+              });
+              }
+              else {
+                webix.alert("Veuillez sélectionner un aquarium");
+              }
+            }
           },
+          // bouton pour modifier
           {
             view: "button", value: "Modifier", css: "webix_transparent", height: 50
           }

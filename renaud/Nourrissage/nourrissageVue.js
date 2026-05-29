@@ -81,9 +81,9 @@ webix.ready(function () {
                     }
                 }
             },
-            { 
-                template: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours. Les minutes ne sont pas prisent en compte", 
-                type: "header", height: 40 
+            {
+                template: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours. Les minutes ne sont pas prisent en compte",
+                type: "header", height: 40
             },
             // Sélection de l'heure ou de l'intervalle de nourrissage
             {
