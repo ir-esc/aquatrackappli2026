@@ -18,6 +18,10 @@ unsigned long temps_rebond = 0;
 
 unsigned long dernierRefreshHoraires = 0;
 
+// mémorisation du dernier nourrissage
+int derniereHeure = -1;
+int derniereMinute = -1;
+
 const char* ntpServer = "pool.ntp.org";
 
 const long gmtOffset_sec = 3600 * 1;
@@ -56,20 +60,17 @@ void loop() {
     // moteur arrêté
     if (etat_moteur == 2) {
         for (int i = 0; i < nbHoraires; i++) {
-            if (timeinfo.tm_hour == horaires[i].heure && timeinfo.tm_min == horaires[i].minute && !deja_declenche[i]) {
+            bool deja_declenche = timeinfo.tm_hour == derniereHeure && timeinfo.tm_min == derniereMinute;
+            if (timeinfo.tm_hour == horaires[i].heure && timeinfo.tm_min == horaires[i].minute && !deja_declenche) {
                 digitalWrite(ENA, HIGH);
                 digitalWrite(IN1, LOW);
                 digitalWrite(IN2, HIGH);
                 etat_moteur = 0;
-                deja_declenche[i] = true;
-            }
-        }
-    }
 
-    // reset du déclenchement
-    for (int i = 0; i < nbHoraires; i++) {
-        if (timeinfo.tm_min != horaires[i].minute) {
-            deja_declenche[i] = false;
+                // mémorisation du dernier nourrissage
+                derniereHeure = timeinfo.tm_hour;
+                derniereMinute = timeinfo.tm_min;
+            }
         }
     }
 
@@ -80,7 +81,7 @@ void loop() {
         }
     }
 
-    // rotation
+    // moteur en rotation
     if (etat_moteur == 1) {
         if (digitalRead(CONTACTEUR) == LOW) {
             temps_rebond = millis();
@@ -95,6 +96,7 @@ void loop() {
                 digitalWrite(IN1, LOW);
                 digitalWrite(IN2, LOW);
                 digitalWrite(ENA, LOW);
+
                 etat_moteur = 2;
             }
             else {
@@ -103,5 +105,5 @@ void loop() {
         }
     }
 
-    delay(100);
+    delay(10);
 }
