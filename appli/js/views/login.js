@@ -24,12 +24,14 @@ function afficherLogin() {
                     view: "text",
                     id: "champ_identifiant",
                     label: "Identifiant",
+                    value: "Alex@ir.lan",
                     placeholder: "Votre identifiant",
                     labelPosition: "top"
                 },
                 {
                     view: "text",
                     id: "champ_mdp",
+                    value: "Alex1234",
                     label: "Mot de passe",
                     type: "password",
                     placeholder: "Votre mot de passe",

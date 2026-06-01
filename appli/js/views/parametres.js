@@ -1,8 +1,56 @@
 // parametres.js - Vue des paramètres physico-chimiques
+function recupParametres() {
+    // Récupère l'ID de l'aquarium
+    var aquariumId = webix.storage.local.get("aquarium_id");
+
+    // récupère les données de l'API avec l'URL spécifiée pour l'aquarium sélectionné
+    webix.ajax("https://aquatrackapi.ir.lan/aqr/" + aquariumId + "/ppc").then(function (data) {
+        var items = data.json();
+        // filtre les mesures avec la date 0
+        const filteredItems = items.filter(function (item) { return item.date !== "0000-00-00 00:00:00"; });
+        // filtre les données par rapport au type de mesure
+        const temperatureItems = filteredItems.filter(function (item) { return item.type_id == 1; });
+        const aciditeItems = filteredItems.filter(function (item) { return item.type_id == 2; });
+        const dureteCarbonateeItems = filteredItems.filter(function (item) { return item.type_id == 3; });
+        const dureteTotaleItems = filteredItems.filter(function (item) { return item.type_id == 4; });
+        const nitritesItems = filteredItems.filter(function (item) { return item.type_id == 5; });
+        const nitratesItems = filteredItems.filter(function (item) { return item.type_id == 6; });
+        const ammoniacItems = filteredItems.filter(function (item) { return item.type_id == 7; });
+        const conductiviteItems = filteredItems.filter(function (item) { return item.type_id == 8; });
+
+        // met les données dans les graphiques correspondants (parse) et les trie par date dans l'ordre croissant (sort)
+        $$('Température_chart').parse(temperatureItems);
+        $$('Température_chart').sort('#date#', 'asc');
+        $$('Acidité_chart').parse(aciditeItems);
+        $$('Acidité_chart').sort('#date#', 'asc');
+        $$('Dureté carbonatée_chart').parse(dureteCarbonateeItems);
+        $$('Dureté carbonatée_chart').sort('#date#', 'asc');
+        $$('Dureté totale_chart').parse(dureteTotaleItems);
+        $$('Dureté totale_chart').sort('#date#', 'asc');
+        $$('Concentration en nitrites_chart').parse(nitritesItems);
+        $$('Concentration en nitrites_chart').sort('#date#', 'asc');
+        $$('Concentration en nitrates_chart').parse(nitratesItems);
+        $$('Concentration en nitrates_chart').sort('#date#', 'asc');
+        $$('Concentration en ammoniac_chart').parse(ammoniacItems);
+        $$('Concentration en ammoniac_chart').sort('#date#', 'asc');
+        $$('Conductivité_chart').parse(conductiviteItems);
+        $$('Conductivité_chart').sort('#date#', 'asc');
+    });
+}
+
+
+// arrondi les valeurs au millième près et les convertit en chaîne de caractères pour enlever les zéros à la fin dans les infobulles
+function formatValeur(value) {
+    return parseFloat(parseFloat(value).toFixed(3)).toString();
+}
 
 function getVueParametres() {
     return {
         id: "vue_parametres",
+        on: {
+                onAfterLoad: function () {
+            
+        }},
         rows: [
             {
                 // barre d'outils en haut de la page avec un bouton de retour et un menu
@@ -39,7 +87,7 @@ function getVueParametres() {
                             // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
                             tooltip: {
                                 template: function (obj) { return formatValeur(obj.valeur); }
-                            }
+                            },
                         }
                     },
                     {
@@ -263,7 +311,9 @@ function getVueParametres() {
                     },
                     {
                         view: "button", value: "Supprimer une mesure", css: "webix_danger", height: 50
-                    }]
-            }]
+                    }
+                ]
+            }
+        ]
     }
 }

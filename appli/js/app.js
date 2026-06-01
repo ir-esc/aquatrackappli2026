@@ -89,6 +89,11 @@ function afficherApp() {
 // Changer de vue dans la SPA
 function naviguer(vue) {
     $$("zone_principale").setValue("vue_" + vue);
+    $$("zone_principale").attachEvent("onViewChange", function(prevID, nextID){
+        if (nextID == "vue_parametres") {
+            recupParametres();
+        }
+    });
 }
 
 // Démarrage de l'application
