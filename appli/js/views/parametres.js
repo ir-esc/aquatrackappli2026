@@ -5,142 +5,265 @@ function getVueParametres() {
         id: "vue_parametres",
         rows: [
             {
+                // barre d'outils en haut de la page avec un bouton de retour et un menu
                 view: "toolbar",
                 elements: [
                     { view: "label", label: "Paramètres physico-chimiques" },
-                    { view: "spacer" },
+                ]
+            },
+            {
+                view: "accordion",
+                rows: [
                     {
-                        view: "select",
-                        id: "select_aquarium_ppc",
-                        label: "Aquarium :",
-                        labelWidth: 90,
-                        width: 280,
-                        options: [],
-                        on: {
-                            onChange: function (idAquarium) {
-                                chargerParametres(idAquarium);
+                        view: "accordionitem",
+                        header: "Température",
+                        headerHeight: 50,
+                        collapsed: true,
+                        body: {
+                            // affiche les données de l'API dans un graphique 
+                            view: "chart",
+                            id: "Température_chart",
+                            height: 400,
+                            type: "line",
+                            value: "#valeur#",
+                            xAxis: {
+                                template: "#date#",
+                                title: "Date"
+                            },
+                            yAxis: {
+                                title: "°C",
+                                start: 5,
+                                end: 40,
+                                step: 5,
+                            },
+                            // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
+                            tooltip: {
+                                template: function (obj) { return formatValeur(obj.valeur); }
                             }
                         }
                     },
                     {
-                        view: "button",
-                        value: "+ Mesure",
-                        width: 110,
-                        css: "webix_primary",
-                        click: function () { afficherFormulaireMesure(); }
-                    }
+                        view: "accordionitem",
+                        header: "Acidité",
+                        headerHeight: 50,
+                        collapsed: true,
+                        body: {
+                            // affiche les données de l'API dans un graphique
+                            view: "chart",
+                            id: "Acidité_chart",
+                            height: 400,
+                            type: "line",
+                            value: "#valeur#",
+                            xAxis: {
+                                template: "#date#",
+                                title: "Date"
+                            },
+                            yAxis: {
+                                title: "pH",
+                                start: 0,
+                                end: 14,
+                                step: 1,
+                                template: function (obj) {
+                                    return obj % 7 ? "" : obj;
+                                }
+                            },
+                            // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
+                            tooltip: {
+                                template: function (obj) { return formatValeur(obj.valeur); }
+                            }
+                        }
+                    },
+                    {
+                        view: "accordionitem",
+                        header: "Dureté carbonatée",
+                        headerHeight: 50,
+                        collapsed: true,
+                        body: {
+                            // affiche les données de l'API dans un graphique 
+                            view: "chart",
+                            id: "Dureté carbonatée_chart",
+                            height: 400,
+                            type: "line",
+                            value: "#valeur#",
+                            xAxis: {
+                                template: "#date#",
+                                title: "Date"
+                            },
+                            yAxis: {
+                                title: "KH",
+                                start: 0,
+                                end: 12,
+                                step: 2,
+                                template: function (obj) {
+                                    return obj % 6 ? "" : obj;
+                                }
+                            },
+                            // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
+                            tooltip: {
+                                template: function (obj) { return formatValeur(obj.valeur); }
+                            }
+                        }
+                    },
+                    {
+                        view: "accordionitem",
+                        header: "Dureté totale",
+                        headerHeight: 50,
+                        collapsed: true,
+                        body: {
+                            // affiche les données de l'API dans un graphique 
+                            view: "chart",
+                            id: "Dureté totale_chart",
+                            height: 400,
+                            type: "line",
+                            value: "#valeur#",
+                            xAxis: {
+                                template: "#date#",
+                                title: "Date"
+                            },
+                            yAxis: {
+                                title: "GH",
+                                start: 0,
+                                end: 30,
+                                step: 2.5,
+                                template: function (obj) {
+                                    return obj % 5 ? "" : obj;
+                                }
+                            },
+                            // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
+                            tooltip: {
+                                template: function (obj) { return formatValeur(obj.valeur); }
+                            }
+                        }
+                    },
+                    {
+                        view: "accordionitem",
+                        header: "Concentration en nitrites",
+                        headerHeight: 50,
+                        collapsed: true,
+                        body: {
+                            // affiche les données de l'API dans un graphique 
+                            view: "chart",
+                            id: "Concentration en nitrites_chart",
+                            height: 400,
+                            type: "line",
+                            value: "#valeur#",
+                            xAxis: {
+                                template: "#date#",
+                                title: "Date"
+                            },
+                            yAxis: {
+                                title: "mg/L",
+                                start: 0,
+                                end: 1,
+                                step: 0.1,
+                            },
+                            // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
+                            tooltip: {
+                                template: function (obj) { return formatValeur(obj.valeur); }
+                            }
+                        }
+                    },
+                    {
+                        view: "accordionitem",
+                        header: "Concentration en nitrates",
+                        headerHeight: 50,
+                        collapsed: true,
+                        body: {
+                            // affiche les données de l'API dans un graphique 
+                            view: "chart",
+                            id: "Concentration en nitrates_chart",
+                            height: 400,
+                            type: "line",
+                            value: "#valeur#",
+                            xAxis: {
+                                template: "#date#",
+                                title: "Date"
+                            },
+                            yAxis: {
+                                title: "mg/L",
+                                start: 0,
+                                end: 50,
+                                step: 5,
+                                template: function (obj) {
+                                    return obj % 10 ? "" : obj;
+                                }
+                            },
+                            // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
+                            tooltip: {
+                                template: function (obj) { return formatValeur(obj.valeur); }
+                            }
+                        }
+                    },
+                    {
+                        view: "accordionitem",
+                        header: "Concentration en ammoniac",
+                        headerHeight: 50,
+                        collapsed: true,
+                        body: {
+                            // affiche les données de l'API dans un graphique 
+                            view: "chart",
+                            id: "Concentration en ammoniac_chart",
+                            height: 400,
+                            type: "line",
+                            value: "#valeur#",
+                            xAxis: {
+                                template: "#date#",
+                                title: "Date"
+                            },
+                            yAxis: {
+                                title: "mg/L",
+                                start: 0,
+                                end: 0.5,
+                                step: 0.05,
+                            },
+                            // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
+                            tooltip: {
+                                template: function (obj) { return formatValeur(obj.valeur); }
+                            }
+                        }
+                    },
+                    {
+                        view: "accordionitem",
+                        header: "Conductivité",
+                        headerHeight: 50,
+                        collapsed: true,
+                        body: {
+                            // affiche les données de l'API dans un graphique 
+                            view: "chart",
+                            id: "Conductivité_chart",
+                            height: 400,
+                            type: "line",
+                            value: "#valeur#",
+                            xAxis: {
+                                template: "#date#",
+                                title: "Date"
+                            },
+                            yAxis: {
+                                title: "uS/cm",
+                                start: 0,
+                                end: 2000,
+                                step: 100,
+                                template: function (obj) {
+                                    return obj % 200 ? "" : obj;
+                                }
+                            },
+                            // affiche la valeur arrondie dans une infobulle au survol du point avec la souris
+                            tooltip: {
+                                template: function (obj) { return formatValeur(obj.valeur); }
+                            }
+                        }
+                    },
                 ]
             },
             {
-                view: "datatable",
-                id: "tableau_parametres",
-                columns: [
-                    { id: "date", header: "Date / Heure", width: 180 },
-                    { id: "type", header: "Paramètre", fillspace: true },
-                    { id: "valeur", header: "Valeur", width: 120 },
-                    { id: "unite", header: "Unité", width: 80 }
-                ],
-                data: []
-            }
-        ]
-    };
-}
-
-function chargerParametres(idAquarium) {
-    if (!idAquarium) return;
-    apiGetParametres(idAquarium, function (err, data) {
-        if (err || !data) {
-            // Données de démo
-            data = [
-                { id: 1, date: "2026-03-16 08:00", type: "pH", valeur: "7.2", unite: "" },
-                { id: 2, date: "2026-03-16 08:00", type: "Température", valeur: "25.0", unite: "°C" },
-                { id: 3, date: "2026-03-16 08:10", type: "pH", valeur: "7.3", unite: "" },
-                { id: 4, date: "2026-03-16 08:10", type: "Nitrites", valeur: "0.05", unite: "mg/L" }
-            ];
-        }
-        $$("tableau_parametres").clearAll();
-        $$("tableau_parametres").parse(data);
-    });
-}
-
-function afficherFormulaireMesure() {
-    webix.ui({
-        view: "window",
-        id: "fenetre_mesure",
-        head: "Ajouter une mesure",
-        modal: true,
-        position: "center",
-        width: 350,
-        body: {
-            view: "form",
-            elements: [
-                {
-                    view: "select",
-                    id: "mesure_type",
-                    label: "Paramètre",
-                    labelPosition: "top",
-                    options: [
-                        { id: "pH", value: "pH" },
-                        { id: "temperature", value: "Température (°C)" },
-                        { id: "nitrites", value: "Nitrites (mg/L)" },
-                        { id: "nitrates", value: "Nitrates (mg/L)" },
-                        { id: "gh", value: "Dureté totale GH" },
-                        { id: "kh", value: "Dureté carbonatée KH" },
-                        { id: "conductivite", value: "Conductivité (S)" },
-                        { id: "fer", value: "Fer Fe (mg/L)" }
-                    ]
-                },
-                {
-                    view: "text",
-                    id: "mesure_valeur",
-                    label: "Valeur",
-                    labelPosition: "top",
-                    placeholder: "ex: 7.2"
-                },
-                {
-                    cols: [
-                        {
-                            view: "button",
-                            value: "Annuler",
-                            click: function () { $$("fenetre_mesure").close(); }
-                        },
-                        {
-                            view: "button",
-                            value: "Enregistrer",
-                            css: "webix_primary",
-                            click: function () {
-                                var type = $$("mesure_type").getValue();
-                                var valeur = $$("mesure_valeur").getValue();
-                                var idAqr = $$("select_aquarium_ppc").getValue();
-
-                                if (valeur == "") {
-                                    webix.message({ type: "error", text: "Entrez une valeur" });
-                                    return;
-                                }
-
-                                apiAjouterMesure(idAqr, type, valeur, function (err, data) {
-                                    $$("fenetre_mesure").close();
-                                    webix.message({ type: "success", text: "Mesure ajoutée !" });
-                                    chargerParametres(idAqr);
-                                });
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    }).show();
-}
-
-// Remplir le select avec les aquariums disponibles
-function remplirSelectAquariumsPPC(aquariums) {
-    var options = aquariums.map(function (a) {
-        return { id: a.id, value: a.nom };
-    });
-    $$("select_aquarium_ppc").define("options", options);
-    $$("select_aquarium_ppc").refresh();
-    if (options.length > 0) {
-        $$("select_aquarium_ppc").setValue(options[0].id);
-        chargerParametres(options[0].id);
+                view: "toolbar",
+                cols: [
+                    {
+                        view: "button", value: "Ajouter une mesure", css: "webix_primary", height: 50
+                    },
+                    {
+                        view: "button", value: "Supprimer une mesure", css: "webix_danger", height: 50
+                    }]
+            }]
     }
 }

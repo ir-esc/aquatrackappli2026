@@ -6,8 +6,8 @@ function getVueAquariums() {
     rows: [
       {
         view: "toolbar",
-        cols: [
-          { template: "Mes aquariums", type: "header", borderless: true },
+        elements: [
+          { view: "label",label: "Mes aquariums" },
         ]
       },
       {

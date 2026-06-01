@@ -89,41 +89,6 @@ function afficherApp() {
 // Changer de vue dans la SPA
 function naviguer(vue) {
     $$("zone_principale").setValue("vue_" + vue);
-
-    // Charger les données de la vue
-    if (vue === "aquariums") {
-        chargerAquariums();
-    }
-    else if (vue === "parametres") {
-        chargerAquariumsPuisAppeler(remplirSelectAquariumsPPC);
-    }
-    else if (vue === "observations") {
-        chargerAquariumsPuisAppeler(remplirSelectAquariumsObs);
-    }
-    else if (vue === "modules") {
-        chargerAquariumsPuisAppeler(remplirSelectAquariumsMod);
-    }
-    else if (vue === "photos") {
-        chargerAquariumsPuisAppeler(remplirSelectAquariumsPhoto);
-    }
-    else if (vue === "utilisateurs") {
-        chargerUtilisateurs();
-    }
-}
-
-// Récupère les aquariums et appelle une fonction avec la liste
-function chargerAquariumsPuisAppeler(callback) {
-    apiGetAquariums(function (err, data) {
-        if (err || !data) {
-            data = [
-                { id: 1, nom: "Aquarium tropical", volume: 200 },
-                { id: 2, nom: "Aquarium eau douce", volume: 100 },
-                { id: 3, nom: "Nano reef", volume: 50 }
-            ];
-        }
-        aquariumsData = data;
-        callback(data);
-    });
 }
 
 // Démarrage de l'application
