@@ -51,6 +51,7 @@ function afficherAquariums() {
               }
             }
           },
+          // bouton pour ajouter
           {
             view: "button", value: "Ajouter", css: "webix_primary", height: 50
           },
