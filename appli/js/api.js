@@ -2,7 +2,7 @@
 
 var API_URL = "https://aquatrackapi.ir.lan";
 
-webix.attachEvent("onAjaxError", function(mode, url, data, request) {
+webix.attachEvent("onAjaxError", function (mode, url, data, request) {
     request.withCredentials = true; // Assurer que les cookies sont envoyés pour les erreurs d'authentification
 });
 
@@ -38,8 +38,8 @@ function authHeaders(extra) {
 // La réponse doit contenir un token → appeler saveSession(data.token)
 function apiConnexion(identifiant, motDePasse, callback) {
     fetch(API_URL + "/log?id=" + encodeURIComponent(identifiant) + "&mdp=" + encodeURIComponent(motDePasse))
-        .then(function(reponse) { return reponse.json(); })
-        .then(function(data) {
+        .then(function (reponse) { return reponse.json(); })
+        .then(function (data) {
             // Sauvegarder le token retourné par l'API si présent
             if (data && data.token) {
                 saveSession(data.token);
@@ -49,7 +49,7 @@ function apiConnexion(identifiant, motDePasse, callback) {
             }
             callback(null, data);
         })
-        .catch(function(err) { callback(err, null); });
+        .catch(function (err) { callback(err, null); });
 }
 
 // ─── Aquariums ───────────────────────────────────────────────────────────
@@ -57,13 +57,13 @@ function apiConnexion(identifiant, motDePasse, callback) {
 // Liste des aquariums : GET /aqr
 function apiGetAquariums(callback) {
     webix.ajax()
-     
+
     fetch(API_URL + "/aqr", {
         headers: authHeaders()
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // Créer un aquarium : POST /aqr
@@ -73,9 +73,9 @@ function apiCreerAquarium(nom, volume, callback) {
         headers: authHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ nom: nom, volume: volume })
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // Supprimer un aquarium : DELETE /aqr/{id}
@@ -84,8 +84,8 @@ function apiSupprimerAquarium(id, callback) {
         method: "DELETE",
         headers: authHeaders()
     })
-        .then(function(r) { callback(null, r.status); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { callback(null, r.status); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // ─── Paramètres physico-chimiques ────────────────────────────────────────────
@@ -95,9 +95,9 @@ function apiGetParametres(idAquarium, callback) {
     fetch(API_URL + "/aqr/" + idAquarium + "/ppc", {
         headers: authHeaders()
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // Ajouter une mesure : POST /aqr/{id}/ppc
@@ -108,9 +108,9 @@ function apiAjouterMesure(idAquarium, type, valeur, callback) {
         headers: authHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ type: type, valeur: valeur, date: maintenant })
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // ─── Observations ────────────────────────────────────────────────────────────
@@ -120,9 +120,9 @@ function apiGetObservations(idAquarium, callback) {
     fetch(API_URL + "/aqr/" + idAquarium + "/obs", {
         headers: authHeaders()
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // Ajouter une observation : POST /aqr/{id}/obs
@@ -132,9 +132,9 @@ function apiAjouterObservation(idAquarium, texte, callback) {
         headers: authHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ texte: texte })
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // ─── Modules ─────────────────────────────────────────────────────────────────
@@ -144,9 +144,9 @@ function apiGetModules(idAquarium, callback) {
     fetch(API_URL + "/aqr/" + idAquarium + "/mod", {
         headers: authHeaders()
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // ─── Utilisateurs ────────────────────────────────────────────────────────────
@@ -156,9 +156,9 @@ function apiGetUtilisateurs(callback) {
     fetch(API_URL + "/utl", {
         headers: authHeaders()
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // Créer un utilisateur : POST /utl
@@ -168,9 +168,9 @@ function apiCreerUtilisateur(identifiant, motDePasse, callback) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ identifiant: identifiant, motDePasse: motDePasse })
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }
 
 // ─── Médias (photos) ─────────────────────────────────────────────────────────
@@ -180,7 +180,7 @@ function apiGetPhotos(idAquarium, callback) {
     fetch(API_URL + "/aqr/" + idAquarium + "/med", {
         headers: authHeaders()
     })
-        .then(function(r) { return r.json(); })
-        .then(function(data) { callback(null, data); })
-        .catch(function(err) { callback(err, null); });
+        .then(function (r) { return r.json(); })
+        .then(function (data) { callback(null, data); })
+        .catch(function (err) { callback(err, null); });
 }

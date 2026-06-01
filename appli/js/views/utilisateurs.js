@@ -7,7 +7,7 @@
 var utilisateurs = [
     { id: 1, identifiant: "admin", admin: true },
     { id: 2, identifiant: "alice", admin: false },
-    { id: 3, identifiant: "bob",   admin: false }
+    { id: 3, identifiant: "bob", admin: false }
 ];
 
 // 2) Vue principale "Gestion des utilisateurs"
@@ -25,7 +25,7 @@ function getVueUtilisateurs() {
                         value: "+ Ajouter",
                         width: 120,
                         css: "webix_primary",
-                        click: function() { afficherFormulaireUtilisateur(); }
+                        click: function () { afficherFormulaireUtilisateur(); }
                     }
                 ]
             },
@@ -38,7 +38,7 @@ function getVueUtilisateurs() {
                         id: "admin",
                         header: "Administrateur",
                         width: 160,
-                        template: function(obj) {
+                        template: function (obj) {
                             return obj.admin ? "✔ Oui" : "Non";
                         }
                     },
@@ -46,7 +46,7 @@ function getVueUtilisateurs() {
                         id: "actions",
                         header: "Actions",
                         width: 120,
-                        template: function(obj) {
+                        template: function (obj) {
                             return "<button onclick=\"supprimerUtilisateur(" + obj.id + ")\">Supprimer</button>";
                         }
                     }
@@ -103,16 +103,16 @@ function afficherFormulaireUtilisateur() {
                         {
                             view: "button",
                             value: "Annuler",
-                            click: function() { $$("fenetre_utilisateur").close(); }
+                            click: function () { $$("fenetre_utilisateur").close(); }
                         },
                         {
                             view: "button",
                             value: "Créer",
                             css: "webix_primary",
-                            click: function() {
+                            click: function () {
                                 var identifiant = $$("utl_identifiant").getValue();
-                                var mdp         = $$("utl_mdp").getValue();
-                                var admin       = $$("utl_admin").getValue(); // true / false
+                                var mdp = $$("utl_mdp").getValue();
+                                var admin = $$("utl_admin").getValue(); // true / false
 
                                 // 4.1 Vérification simple des champs
                                 if (identifiant == "" || mdp == "") {
@@ -120,12 +120,12 @@ function afficherFormulaireUtilisateur() {
                                     return;
                                 }
 
-                                
+
                                 // 4.2 Ajout dans l'API
-                               webix.ajax.post("https://aquatrackapi.ir.lan/utl", {
-                                                 email: identifiant,
-	                                             motdepasse : mdp
-                               });
+                                webix.ajax.post("https://aquatrackapi.ir.lan/utl", {
+                                    email: identifiant,
+                                    motdepasse: mdp
+                                });
 
 
 
@@ -147,11 +147,11 @@ function supprimerUtilisateur(id) {
     webix.confirm({
         title: "Supprimer",
         text: "Supprimer cet utilisateur ?",
-        callback: function(reponse) {
+        callback: function (reponse) {
             if (reponse) {
 
-webix.ajax().del("https://aquatrackapi.ir.lan/log", { id: id }, function(text, data, request) {
-                        console.log(text);
+                webix.ajax().del("https://aquatrackapi.ir.lan/log", { id: id }, function (text, data, request) {
+                    console.log(text);
 
 
                 });
@@ -165,7 +165,7 @@ webix.ajax().del("https://aquatrackapi.ir.lan/log", { id: id }, function(text, d
 
 
                 // 5.1 On filtre le tableau pour enlever l'utilisateur
-                utilisateurs = utilisateurs.filter(function(u) {
+                utilisateurs = utilisateurs.filter(function (u) {
                     return u.id !== id;
                 });
 

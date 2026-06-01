@@ -41,7 +41,7 @@ function afficherLogin() {
                     css: "webix_primary",
                     click: function () {
                         var email = $$("champ_identifiant").getValue();
-                        var mdp        = $$("champ_mdp").getValue();
+                        var mdp = $$("champ_mdp").getValue();
 
                         if (!email || !mdp) {
                             webix.message({ type: "error", text: "Veuillez remplir tous les champs !" });
@@ -77,27 +77,27 @@ function afficherLogin() {
 }
 
 // ─── Appel API login ──────────────────────────────────────────────────────────
-    function apiLogin(email, motdepasse, callback) {
+function apiLogin(email, motdepasse, callback) {
     fetch(API_BASE + "/log", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email, motdepasse: motdepasse })
     })
-    .then(function(r) {
-        return r.json().then(function(data) {
-            if (r.ok) {
-                callback(null, data);
-            } else {
-                callback(data.message || "Echec de l authentification", null);
-            }
+        .then(function (r) {
+            return r.json().then(function (data) {
+                if (r.ok) {
+                    callback(null, data);
+                } else {
+                    callback(data.message || "Echec de l authentification", null);
+                }
+            });
+        })
+        .catch(function (err) {
+            callback("Erreur reseau : " + err.message, null);
         });
-    })
-    .catch(function(err) {
-        callback("Erreur reseau : " + err.message, null);
-    });
 }
-                                                 
+
 
 // ─── Mot de passe oublié ──────────────────────────────────────────────────────
 function afficherFormulaireMotDePasseOublie() {
@@ -142,14 +142,14 @@ function afficherFormulaireMotDePasseOublie() {
                                     headers: { "Content-Type": "application/json" },
                                     body: JSON.stringify({ email: email })
                                 })
-                                .then(function (response) { return response.json(); })
-                                .then(function (reponse) {
-                                    webix.message({ type: "success", text: reponse.message || "Email de réinitialisation envoyé !" });
-                                    $$("fenetre_mdp_oublie").close();
-                                })
-                                .catch(function (err) {
-                                    webix.message({ type: "error", text: "Erreur réseau : " + err.message });
-                                });
+                                    .then(function (response) { return response.json(); })
+                                    .then(function (reponse) {
+                                        webix.message({ type: "success", text: reponse.message || "Email de réinitialisation envoyé !" });
+                                        $$("fenetre_mdp_oublie").close();
+                                    })
+                                    .catch(function (err) {
+                                        webix.message({ type: "error", text: "Erreur réseau : " + err.message });
+                                    });
                             }
                         }
                     ]
@@ -161,7 +161,7 @@ function afficherFormulaireMotDePasseOublie() {
 
 // ─── Inscription ──────────────────────────────────────────────────────────────
 function afficherFormulaireInscription() {
-  webix.ui({
+    webix.ui({
         view: "window",
         id: "fenetre_inscription",
         head: "Creer un compte",
@@ -200,7 +200,7 @@ function afficherFormulaireInscription() {
                             css: "webix_primary",
                             click: function () {
                                 var email = $$("email_inscription").getValue();
-                                var mdp   = $$("mdp_inscription").getValue();
+                                var mdp = $$("mdp_inscription").getValue();
 
                                 if (!email || !mdp) {
                                     webix.message({ type: "error", text: "Veuillez remplir tous les champs !" });
@@ -214,31 +214,31 @@ function afficherFormulaireInscription() {
                                     headers: { "Content-Type": "application/json" },
                                     body: JSON.stringify({ email: email, motdepasse: mdp })
                                 })
-                                .then(function(r) {
-                                    return r.json().then(function(data) {
+                                    .then(function (r) {
+                                        return r.json().then(function (data) {
 
-                                        if (r.status === 201) {
-                                            // Succes
-                                            webix.message({ type: "success", text: "Compte cree avec succes ! Vous pouvez vous connecter." });
-                                            $$("fenetre_inscription").close();
+                                            if (r.status === 201) {
+                                                // Succes
+                                                webix.message({ type: "success", text: "Compte cree avec succes ! Vous pouvez vous connecter." });
+                                                $$("fenetre_inscription").close();
 
-                                        } else if (r.status === 409) {
-                                            // Email deja utilise : message dans data.messages.error
-                                            var msg = (data.messages && data.messages.error) ? data.messages.error : "Email deja utilise";
-                                            webix.message({ type: "error", text: msg });
+                                            } else if (r.status === 409) {
+                                                // Email deja utilise : message dans data.messages.error
+                                                var msg = (data.messages && data.messages.error) ? data.messages.error : "Email deja utilise";
+                                                webix.message({ type: "error", text: msg });
 
-                                        } else if (r.status === 400) {
-                                            // Donnees invalides : message dans data.message
-                                            webix.message({ type: "error", text: data.message || "Donnees invalides" });
+                                            } else if (r.status === 400) {
+                                                // Donnees invalides : message dans data.message
+                                                webix.message({ type: "error", text: data.message || "Donnees invalides" });
 
-                                        } else {
-                                            webix.message({ type: "error", text: data.message || "Erreur inconnue" });
-                                        }
+                                            } else {
+                                                webix.message({ type: "error", text: data.message || "Erreur inconnue" });
+                                            }
+                                        });
+                                    })
+                                    .catch(function (err) {
+                                        webix.message({ type: "error", text: "Erreur reseau : " + err.message });
                                     });
-                                })
-                                .catch(function(err) {
-                                    webix.message({ type: "error", text: "Erreur reseau : " + err.message });
-                                });
                             }
                         }
                     ]

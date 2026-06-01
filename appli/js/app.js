@@ -2,7 +2,7 @@
 // SPA (Single Page Application) avec Webix
 
 // app.js — UNE seule ligne, avant tout appel API
-webix.attachEvent("onBeforeAjax", function(mode, url, data, req) {
+webix.attachEvent("onBeforeAjax", function (mode, url, data, req) {
     req.withCredentials = true;
 });
 
@@ -23,7 +23,7 @@ function afficherApp() {
                 elements: [
                     {
                         view: "label",
-                        label: "🐠 Aquatrack",
+                        label: "Aquatrack",
                         css: { "color": "white", "font-size": "18px", "font-weight": "bold" }
                     },
                     { view: "spacer" },
@@ -31,7 +31,7 @@ function afficherApp() {
                         view: "button",
                         value: "Déconnexion",
                         width: 130,
-                        click: function() {
+                        click: function () {
                             supprimerSession();
                             $$("app_principal").destructor();
                             afficherLogin();
@@ -49,15 +49,15 @@ function afficherApp() {
                         width: 200,
                         select: true,
                         data: [
-                            { id: "aquariums",    value: "🐟 Aquariums" },
-                            { id: "parametres",   value: "📊 Paramètres" },
-                            { id: "observations", value: "📝 Observations" },
-                            { id: "modules",      value: "🔌 Modules" },
-                            { id: "photos",       value: "📷 Photos" },
-                            { id: "utilisateurs", value: "👥 Utilisateurs" }
+                            { id: "aquariums", value: "Aquariums" },
+                            { id: "parametres", value: "Paramètres" },
+                            { id: "observations", value: "Observations" },
+                            { id: "modules", value: "Modules" },
+                            { id: "photos", value: "Photos" },
+                            { id: "utilisateurs", value: "Utilisateurs" }
                         ],
                         on: {
-                            onAfterSelect: function(id) {
+                            onAfterSelect: function (id) {
                                 naviguer(id);
                             }
                         }
@@ -112,12 +112,12 @@ function naviguer(vue) {
 
 // Récupère les aquariums et appelle une fonction avec la liste
 function chargerAquariumsPuisAppeler(callback) {
-    apiGetAquariums(function(err, data) {
+    apiGetAquariums(function (err, data) {
         if (err || !data) {
             data = [
-                { id: 1, nom: "Aquarium tropical",  volume: 200 },
-                { id: 2, nom: "Aquarium eau douce",  volume: 100 },
-                { id: 3, nom: "Nano reef",            volume:  50 }
+                { id: 1, nom: "Aquarium tropical", volume: 200 },
+                { id: 2, nom: "Aquarium eau douce", volume: 100 },
+                { id: 3, nom: "Nano reef", volume: 50 }
             ];
         }
         aquariumsData = data;
@@ -126,7 +126,7 @@ function chargerAquariumsPuisAppeler(callback) {
 }
 
 // Démarrage de l'application
-webix.ready(function() {
+webix.ready(function () {
     // Si déjà connecté, afficher l'app directement
     if (getSession() || localStorage.getItem("user_id")) {
         afficherApp();

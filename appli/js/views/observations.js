@@ -17,7 +17,7 @@ function getVueObservations() {
                         width: 280,
                         options: [],
                         on: {
-                            onChange: function(id) { chargerObservations(id); }
+                            onChange: function (id) { chargerObservations(id); }
                         }
                     },
                     {
@@ -25,14 +25,14 @@ function getVueObservations() {
                         value: "+ Observation",
                         width: 140,
                         css: "webix_primary",
-                        click: function() { afficherFormulaireObservation(); }
+                        click: function () { afficherFormulaireObservation(); }
                     }
                 ]
             },
             {
                 view: "list",
                 id: "liste_observations",
-                template: function(obj) {
+                template: function (obj) {
                     return "<b>" + (obj.date || "sans date") + "</b><br>" + obj.texte;
                 },
                 type: { height: 80 },
@@ -44,7 +44,7 @@ function getVueObservations() {
 
 function chargerObservations(idAquarium) {
     if (!idAquarium) return;
-    apiGetObservations(idAquarium, function(err, data) {
+    apiGetObservations(idAquarium, function (err, data) {
         if (err || !data) {
             data = [
                 { id: 1, date: "2026-03-10", texte: "Ajout de 2 poissons néons. Comportement normal." },
@@ -82,13 +82,13 @@ function afficherFormulaireObservation() {
                         {
                             view: "button",
                             value: "Annuler",
-                            click: function() { $$("fenetre_observation").close(); }
+                            click: function () { $$("fenetre_observation").close(); }
                         },
                         {
                             view: "button",
                             value: "Enregistrer",
                             css: "webix_primary",
-                            click: function() {
+                            click: function () {
                                 var texte = $$("obs_texte").getValue();
                                 var idAqr = $$("select_aquarium_obs").getValue();
 
@@ -97,7 +97,7 @@ function afficherFormulaireObservation() {
                                     return;
                                 }
 
-                                apiAjouterObservation(idAqr, texte, function(err, data) {
+                                apiAjouterObservation(idAqr, texte, function (err, data) {
                                     $$("fenetre_observation").close();
                                     webix.message({ type: "success", text: "Observation ajoutée !" });
                                     chargerObservations(idAqr);
@@ -112,7 +112,7 @@ function afficherFormulaireObservation() {
 }
 
 function remplirSelectAquariumsObs(aquariums) {
-    var options = aquariums.map(function(a) {
+    var options = aquariums.map(function (a) {
         return { id: a.id, value: a.nom };
     });
     $$("select_aquarium_obs").define("options", options);
