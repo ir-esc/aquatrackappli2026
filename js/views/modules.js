@@ -21,7 +21,7 @@ function getVueModules() {
             {
                 view: "toolbar",
                 elements: [
-                    { view: "label", label: "🔌 Modules connectés" },
+                    { view: "label", label: "Modules connectés" },
                     { view: "spacer" },
                     {
                         view: "select",

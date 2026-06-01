@@ -7,7 +7,7 @@ function getVueParametres() {
             {
                 view: "toolbar",
                 elements: [
-                    { view: "label", label: "📊 Paramètres physico-chimiques" },
+                    { view: "label", label: "Paramètres physico-chimiques" },
                     { view: "spacer" },
                     {
                         view: "select",

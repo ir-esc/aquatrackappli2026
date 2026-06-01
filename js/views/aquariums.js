@@ -7,7 +7,7 @@ function getVueAquariums() {
             {
                 view: "toolbar",
                 elements: [
-                    { view: "label", label: "🐟 Mes Aquariums" },
+                    { view: "label", label: "Mes Aquariums" },
                     { view: "spacer" },
                     {
                         view: "button",

@@ -7,7 +7,7 @@ function getVuePhotos() {
             {
                 view: "toolbar",
                 elements: [
-                    { view: "label", label: "📷 Galerie photos" },
+                    { view: "label", label: "Galerie photos" },
                     { view: "spacer" },
                     {
                         view: "select",

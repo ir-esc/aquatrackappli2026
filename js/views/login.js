@@ -13,7 +13,7 @@ function afficherLogin() {
             elements: [
                 {
                     view: "template",
-                    template: "<div style='text-align:center; font-size:24px; color:#0077b6; padding:20px;'>🐠 Aquatrack</div>",
+                    template: "<div style='text-align:center; font-size:24px; color:#0077b6; padding:20px;'>Aquatrack</div>",
                     height: 80,
                     borderless: true
                 },

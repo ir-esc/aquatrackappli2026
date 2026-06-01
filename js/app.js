@@ -17,7 +17,7 @@ function afficherApp() {
                 elements: [
                     {
                         view: "label",
-                        label: "🐠 Aquatrack",
+                        label: "Aquatrack",
                         css: { "color": "white", "font-size": "18px", "font-weight": "bold" }
                     },
                     { view: "spacer" },
@@ -43,12 +43,12 @@ function afficherApp() {
                         width: 200,
                         select: true,
                         data: [
-                            { id: "aquariums",    value: "🐟 Aquariums" },
-                            { id: "parametres",   value: "📊 Paramètres" },
-                            { id: "observations", value: "📝 Observations" },
-                            { id: "modules",      value: "🔌 Modules" },
-                            { id: "photos",       value: "📷 Photos" },
-                            { id: "utilisateurs", value: "👥 Utilisateurs" }
+                            { id: "aquariums",    value: "Aquariums" },
+                            { id: "parametres",   value: "Paramètres" },
+                            { id: "observations", value: "Observations" },
+                            { id: "modules",      value: "Modules" },
+                            { id: "photos",       value: "Photos" },
+                            { id: "utilisateurs", value: "Utilisateurs" }
                         ],
                         on: {
                             onAfterSelect: function(id) {

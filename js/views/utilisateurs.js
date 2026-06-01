@@ -7,7 +7,7 @@ function getVueUtilisateurs() {
             {
                 view: "toolbar",
                 elements: [
-                    { view: "label", label: "👥 Gestion des utilisateurs" },
+                    { view: "label", label: "Gestion des utilisateurs" },
                     { view: "spacer" },
                     {
                         view: "button",
