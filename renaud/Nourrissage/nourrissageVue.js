@@ -158,7 +158,7 @@ webix.ready(function () {
                                     "statut": "actif",
                                     "date_installation": "2026-05-26 00:00:00",
                                     "module_uid": "erwan_nourrissage",
-                                    "config": "{\"horaires\":[{\"heure\":" + h1 + "},{\"heure\":" + h2 + "}]}",
+                                    "config": "{\"horaires\":[{\"jours\":" + selected + "},{\"heure\":" + h1 + "},{\"heure\":" + h2 + "}]}",
                                     "token_id": null
                                 }
                                 ));
