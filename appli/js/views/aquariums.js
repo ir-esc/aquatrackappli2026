@@ -136,3 +136,4 @@ function voirAquarium(id) {
     localStorage.setItem("aquarium_selectionne", id);
     naviguer("parametres");
 }
+

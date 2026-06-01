@@ -1,6 +1,12 @@
 // app.js - Point d'entrée de l'application Aquatrack
 // SPA (Single Page Application) avec Webix
 
+// app.js — UNE seule ligne, avant tout appel API
+webix.attachEvent("onBeforeAjax", function(mode, url, data, req) {
+    req.withCredentials = true;
+});
+
+
 // Données des aquariums chargées au démarrage
 var aquariumsData = [];
 
@@ -60,7 +66,7 @@ function afficherApp() {
                     {
                         view: "multiview",
                         id: "zone_principale",
-                        cells: [
+                        cells: [// Les différentes vues de l'application
                             getVueAquariums(),
                             getVueParametres(),
                             getVueObservations(),

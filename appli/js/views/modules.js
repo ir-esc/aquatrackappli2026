@@ -1,17 +1,14 @@
 // modules.js - Gestion des modules connectés
 
-// ------------------------------------------------
 // Données de démo (remplacer par l'API plus tard)
-// ------------------------------------------------
+
 var listModules = [
     { id: 1, id_module: "ESP32-PH-001",  type: "Capteur pH",         statut: "appaire",    configuration: '{"periode": 600}' },
     { id: 2, id_module: "ESP32-CAM-001", type: "Module photo",        statut: "appaire",    configuration: '{"periode": 3600}' },
     { id: 3, id_module: "FEED-001",      type: "Module nourrissage",  statut: "en_attente", configuration: '{"horaires": ["07:00","17:00"]}' }
 ];
 
-// ------------------------------------------------
 // Construction de la vue Modules
-// ------------------------------------------------
 function getVueModules() {
     return {
         id: "vue_modules",
@@ -64,18 +61,14 @@ function getVueModules() {
     };
 }
 
-// ------------------------------------------------
 // Charger les modules dans le tableau
-// ------------------------------------------------
 function chargerModules(idAquarium) {
     // On vide le tableau puis on met les données dedans
     $$("tableau_modules").clearAll();
     $$("tableau_modules").parse(listModules);
 }
 
-// ------------------------------------------------
 // Ouvrir la fenêtre pour modifier un module
-// ------------------------------------------------
 function ouvrirModifierModule(id) {
 
     // On récupère les infos du module cliqué
@@ -213,9 +206,7 @@ function ouvrirModifierModule(id) {
     }).show();
 }
 
-// ------------------------------------------------
 // Remplir le sélecteur d'aquariums
-// ------------------------------------------------
 function remplirSelectAquariumsMod(aquariums) {
     var options = [];
 
