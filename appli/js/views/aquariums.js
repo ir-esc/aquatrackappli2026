@@ -2,6 +2,7 @@
 
 function getVueAquariums() {
   return {
+    id: "vue_aquariums",
     rows: [
       {
         view: "toolbar",

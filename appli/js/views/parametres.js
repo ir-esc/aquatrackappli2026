@@ -2,11 +2,33 @@
 
 function getVueParametres() {
     return {
+        id: "vue_parametres",
         rows: [
             {
                 view: "toolbar",
                 elements: [
                     { view: "label", label: "Paramètres physico-chimiques" },
+                    { view: "spacer" },
+                    {
+                        view: "select",
+                        id: "select_aquarium_ppc",
+                        label: "Aquarium :",
+                        labelWidth: 90,
+                        width: 280,
+                        options: [],
+                        on: {
+                            onChange: function (idAquarium) {
+                                chargerParametres(idAquarium);
+                            }
+                        }
+                    },
+                    {
+                        view: "button",
+                        value: "+ Mesure",
+                        width: 110,
+                        css: "webix_primary",
+                        click: function () { afficherFormulaireMesure(); }
+                    }
                 ]
             },
             {
