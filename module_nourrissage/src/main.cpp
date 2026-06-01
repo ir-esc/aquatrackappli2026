@@ -65,7 +65,7 @@ void loop() {
                 digitalWrite(ENA, HIGH);
                 digitalWrite(IN1, LOW);
                 digitalWrite(IN2, HIGH);
-                etat_moteur = 0;
+                etat_moteur = 1;
             }
         }
         // mode horaire
@@ -76,7 +76,7 @@ void loop() {
                     digitalWrite(ENA, HIGH);
                     digitalWrite(IN1, LOW);
                     digitalWrite(IN2, HIGH);
-                    etat_moteur = 0;
+                    etat_moteur = 1;
 
                     // mémorisation du dernier nourrissage
                     derniereHeure = timeinfo.tm_hour;
@@ -86,17 +86,17 @@ void loop() {
         }
     }
 
-    // quitter contacteur
-    if (etat_moteur == 0) {
-        if (digitalRead(CONTACTEUR) == HIGH) {
-            etat_moteur = 1;
-        }
-    }
-
     // moteur en rotation
     if (etat_moteur == 1) {
         if (digitalRead(CONTACTEUR) == LOW) {
-            temps_rebond = millis();
+            etat_moteur = 0;
+        }
+    }
+
+    // quitter contacteur
+    if (etat_moteur == 0) {
+        if (digitalRead(CONTACTEUR) == HIGH) {
+			temps_rebond = millis();
             etat_moteur = 3;
         }
     }
@@ -104,7 +104,7 @@ void loop() {
     // anti rebond
     if (etat_moteur == 3) {
         if (millis() - temps_rebond > 30) {
-            if (digitalRead(CONTACTEUR) == LOW) {
+            if (digitalRead(CONTACTEUR) == HIGH) {
                 digitalWrite(IN1, LOW);
                 digitalWrite(IN2, LOW);
                 digitalWrite(ENA, LOW);
@@ -113,7 +113,7 @@ void loop() {
                 etat_moteur = 2;
             }
             else {
-                etat_moteur = 1;
+                etat_moteur = 0;
             }
         }
     }
