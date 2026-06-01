@@ -3,9 +3,9 @@
 // Données de démo (remplacer par l'API plus tard)
 
 var listModules = [
-    { id: 1, id_module: "ESP32-PH-001",  type: "Capteur pH",         statut: "appaire",    configuration: '{"periode": 600}' },
-    { id: 2, id_module: "ESP32-CAM-001", type: "Module photo",        statut: "appaire",    configuration: '{"periode": 3600}' },
-    { id: 3, id_module: "FEED-001",      type: "Module nourrissage",  statut: "en_attente", configuration: '{"horaires": ["07:00","17:00"]}' }
+    { id: 1, id_module: "ESP32-PH-001", type: "Capteur pH", statut: "appaire", configuration: '{"periode": 600}' },
+    { id: 2, id_module: "ESP32-CAM-001", type: "Module photo", statut: "appaire", configuration: '{"periode": 3600}' },
+    { id: 3, id_module: "FEED-001", type: "Module nourrissage", statut: "en_attente", configuration: '{"horaires": ["07:00","17:00"]}' }
 ];
 
 // Construction de la vue Modules
@@ -18,7 +18,7 @@ function getVueModules() {
             {
                 view: "toolbar",
                 elements: [
-                    { view: "label", label: "🔌 Modules connectés" },
+                    { view: "label", label: "Modules connectés" },
                     { view: "spacer" },
                     {
                         view: "select",
@@ -28,7 +28,7 @@ function getVueModules() {
                         width: 280,
                         options: [],
                         on: {
-                            onChange: function(idAquarium) {
+                            onChange: function (idAquarium) {
                                 chargerModules(idAquarium);
                             }
                         }
@@ -41,15 +41,15 @@ function getVueModules() {
                 view: "datatable",
                 id: "tableau_modules",
                 columns: [
-                    { id: "id_module",     header: "Identifiant",        fillspace: true },
-                    { id: "type",          header: "Type",                width: 180 },
-                    { id: "statut",        header: "Statut",              width: 160 },
+                    { id: "id_module", header: "Identifiant", fillspace: true },
+                    { id: "type", header: "Type", width: 180 },
+                    { id: "statut", header: "Statut", width: 160 },
                     { id: "configuration", header: "Configuration (JSON)", width: 200 },
                     {
                         id: "modifier",
                         header: "Action",
                         width: 110,
-                        template: function(ligne) {
+                        template: function (ligne) {
                             return "<button onclick=\"ouvrirModifierModule(" + ligne.id + ")\">✏ Modifier</button>";
                         }
                     }
@@ -115,7 +115,7 @@ function ouvrirModifierModule(id) {
                     labelPosition: "top",
                     value: module.statut,
                     options: [
-                        { id: "appaire",    value: "Appairage réalisé" },
+                        { id: "appaire", value: "Appairage réalisé" },
                         { id: "en_attente", value: "En attente" }
                     ]
                 },
@@ -126,7 +126,7 @@ function ouvrirModifierModule(id) {
                     label: "Configuration",
                     labelPosition: "right",
                     value: module.type,
-                   options: [
+                    options: [
                         "Intervalle",
                         "tout les 5 minutes",
                         "tout les 10 minutes",
@@ -152,10 +152,10 @@ function ouvrirModifierModule(id) {
                     ],
                     view: "button",
                     value: "Annuler",
-                    click: function() {
-                    $$("d").close();
-                            
-                        },
+                    click: function () {
+                        $$("d").close();
+
+                    },
                 },
 
                 // Boutons Annuler / Enregistrer
@@ -164,7 +164,7 @@ function ouvrirModifierModule(id) {
                         {
                             view: "button",
                             value: "Annuler",
-                            click: function() {
+                            click: function () {
                                 $$("fenetre_modifier").close();
                             }
                         },
@@ -172,13 +172,13 @@ function ouvrirModifierModule(id) {
                             view: "button",
                             value: "Enregistrer",
                             css: "webix_primary",
-                            click: function() {
+                            click: function () {
 
                                 // On lit les valeurs du formulaire
                                 var nouvelIdentifiant = $$("champ_id_module").getValue();
-                                var nouveauType       = $$("champ_type").getValue();
-                                var nouveauStatut     = $$("champ_statut").getValue();
-                                var nouvelleConfig    = $$("champ_config").getValue();
+                                var nouveauType = $$("champ_type").getValue();
+                                var nouveauStatut = $$("champ_statut").getValue();
+                                var nouvelleConfig = $$("champ_config").getValue();
 
                                 // Vérification simple
                                 if (nouvelIdentifiant == "") {
@@ -188,9 +188,9 @@ function ouvrirModifierModule(id) {
 
                                 // On met à jour la ligne dans le tableau
                                 $$("tableau_modules").updateItem(id, {
-                                    id_module:     nouvelIdentifiant,
-                                    type:          nouveauType,
-                                    statut:        nouveauStatut,
+                                    id_module: nouvelIdentifiant,
+                                    type: nouveauType,
+                                    statut: nouveauStatut,
                                     configuration: nouvelleConfig
                                 });
 

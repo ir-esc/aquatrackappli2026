@@ -1,7 +1,7 @@
 // aquariums.js - Vue gestion des aquariums
 
 function getVueAquariums() {
-    return {
+  return {
     rows: [
       {
         view: "toolbar",

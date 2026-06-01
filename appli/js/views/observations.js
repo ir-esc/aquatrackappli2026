@@ -7,7 +7,7 @@ function getVueObservations() {
             {
                 view: "toolbar",
                 elements: [
-                    { view: "label", label: "📝 Journal des observations" },
+                    { view: "label", label: "Journal des observations" },
                     { view: "spacer" },
                     {
                         view: "select",
