@@ -31,6 +31,7 @@ function afficherApp() {
                         view: "button",
                         value: "Déconnexion",
                         width: 130,
+                        css: "webix_danger",
                         click: function () {
                             supprimerSession();
                             $$("app_principal").destructor();
