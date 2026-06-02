@@ -4,7 +4,7 @@
 #include <ArduinoJson.h>
 #include "wifi_config.h"
 #include "WifiManager.h"
-#include "Login.h"
+#include "AuthAPI.h"
 #include "ConfigAPI.h"
 
 int ENA = 25;
@@ -35,10 +35,16 @@ void setup() {
     pinMode(CONTACTEUR, INPUT_PULLUP);
 
     connexionWifi(ssid, password);
-
-    loginApi();
-
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+	moduleToken = loadToken(); // Chargement du jeton depuis la mémoire flash au démarrage
+    if (moduleToken == "") {
+        Serial.println("Aucun jeton trouvé, fetchToken nécessaire");
+        fetchToken(WiFi.macAddress());
+        Serial.println("Jeton récupéré et stocké : " + moduleToken);
+    } else {
+        Serial.println("Jeton trouvé en mémoire : " + moduleToken);
+    }
 
     getConfigModule();
 }

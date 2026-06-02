@@ -1,6 +1,7 @@
 #include "ConfigAPI.h"
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include <AuthAPI.h>
 
 Horaire horaires[MAX_HORAIRES];
 
@@ -15,9 +16,11 @@ void getConfigModule() {
 
     HTTPClient http;
 
-    String url = "http://aquatrackapi.ir.lan/mod/8";
+    String url = "http://aquatrackapi.ir.lan/mod/0";
 
     http.begin(url);
+
+    http.addHeader("Authorization", "Bearer " + moduleToken);
 
     int httpCode = http.GET();
 
