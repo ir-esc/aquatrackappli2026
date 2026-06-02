@@ -24,6 +24,7 @@ function afficherLogin() {
                     view: "text",
                     id: "champ_identifiant",
                     label: "Identifiant",
+                    // met l'identifiant automatiquement
                     value: "Alex@ir.lan",
                     placeholder: "Votre identifiant",
                     labelPosition: "top"
@@ -31,6 +32,7 @@ function afficherLogin() {
                 {
                     view: "text",
                     id: "champ_mdp",
+                    // met le mdp automatiquement
                     value: "Alex1234",
                     label: "Mot de passe",
                     type: "password",

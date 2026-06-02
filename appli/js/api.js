@@ -52,67 +52,6 @@ function apiConnexion(identifiant, motDePasse, callback) {
         .catch(function (err) { callback(err, null); });
 }
 
-// ─── Aquariums ───────────────────────────────────────────────────────────
-
-// Liste des aquariums : GET /aqr
-function apiGetAquariums(callback) {
-    webix.ajax()
-
-    fetch(API_URL + "/aqr", {
-        headers: authHeaders()
-    })
-        .then(function (r) { return r.json(); })
-        .then(function (data) { callback(null, data); })
-        .catch(function (err) { callback(err, null); });
-}
-
-// Créer un aquarium : POST /aqr
-function apiCreerAquarium(nom, volume, callback) {
-    fetch(API_URL + "/aqr", {
-        method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ nom: nom, volume: volume })
-    })
-        .then(function (r) { return r.json(); })
-        .then(function (data) { callback(null, data); })
-        .catch(function (err) { callback(err, null); });
-}
-
-// Supprimer un aquarium : DELETE /aqr/{id}
-function apiSupprimerAquarium(id, callback) {
-    fetch(API_URL + "/aqr/" + id, {
-        method: "DELETE",
-        headers: authHeaders()
-    })
-        .then(function (r) { callback(null, r.status); })
-        .catch(function (err) { callback(err, null); });
-}
-
-// ─── Paramètres physico-chimiques ────────────────────────────────────────────
-
-// Lire les paramètres : GET /aqr/{id}/ppc
-function apiGetParametres(idAquarium, callback) {
-    fetch(API_URL + "/aqr/" + idAquarium + "/ppc", {
-        headers: authHeaders()
-    })
-        .then(function (r) { return r.json(); })
-        .then(function (data) { callback(null, data); })
-        .catch(function (err) { callback(err, null); });
-}
-
-// Ajouter une mesure : POST /aqr/{id}/ppc
-function apiAjouterMesure(idAquarium, type, valeur, callback) {
-    var maintenant = new Date().toISOString();
-    fetch(API_URL + "/aqr/" + idAquarium + "/ppc", {
-        method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ type: type, valeur: valeur, date: maintenant })
-    })
-        .then(function (r) { return r.json(); })
-        .then(function (data) { callback(null, data); })
-        .catch(function (err) { callback(err, null); });
-}
-
 // ─── Observations ────────────────────────────────────────────────────────────
 
 // Lire les observations : GET /aqr/{id}/obs
