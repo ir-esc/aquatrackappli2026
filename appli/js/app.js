@@ -28,7 +28,8 @@ function afficherApp() {
                     },
                     {
                         view: "label",
-                        label: "Aquatrack"
+                        label: "Aquatrack",
+                        align: "center"
                     },
                     {
                         view: "button",
