@@ -3,6 +3,7 @@
 function getVueNourrissage() {
     return {
         id: "vue_nourrissage",
+        width: 1720,
         rows: [
             {
                 view: "toolbar",
@@ -39,6 +40,7 @@ function getVueNourrissage() {
                         }
                         else {
                             $$("toggleTBoard2").disable();
+                            $$("toggleTBoard2").setValue("Ajouter une heure de nourrissage");
                             $$("tBoard2").hide();
                         }
 
@@ -46,8 +48,7 @@ function getVueNourrissage() {
                 }
             },
             {
-                template: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours. Les minutes ne sont pas prisent en compte",
-                type: "header", height: 40
+                view: "label", label: "Pour créer un intervalle de nourrissage : ne pas sélectionner de jours. Les minutes ne sont pas prisent en compte"
             },
             // Sélection de l'heure ou de l'intervalle de nourrissage
             {
