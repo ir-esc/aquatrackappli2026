@@ -3,8 +3,9 @@
 #include <ArduinoJson.h>
 #include "Wifi_handling.h"
 #include "Scheduler.h"
+#include "LOGIN_Handling.h"
 
-const int moduleId = 6;
+int aquariumId = -1; // Valeur par défaut, sera mise à jour dans fetchConfig() après récupération de la config depuis l'API
 
 void fetchConfig() {
     WiFiClient client; // On utilise WiFiClient directement pour mieux contrôler la requête et lire la réponse complète
@@ -14,9 +15,9 @@ void fetchConfig() {
         return;
     }
 
-    client.println("GET /mod/" + String(moduleId) + " HTTP/1.1");
+    client.println("GET /mod/0 HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
-    client.println("Cookie: " + sessionCookie);
+    client.println("Authorization: Bearer " + moduleToken);
     client.println("accept: application/json");
     client.println("Connection: close");
     client.println();
@@ -45,7 +46,8 @@ void fetchConfig() {
 
     // On extrait le champ config
     String configStr = doc["config"].as<String>();
-
+    // On extrait aussi le aquarium_id pour l'utiliser dans les autres fonctions qui font des requêtes à l'API
+    aquariumId = doc["aquarium_id"].as<int>();
     // Deuxième parse — fait dans parseConfig() du scheduler
     scheduler.parseConfig(configStr);
 }

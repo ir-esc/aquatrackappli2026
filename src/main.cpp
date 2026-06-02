@@ -13,6 +13,7 @@
 unsigned long last_photo = 0;
 unsigned long lastLogin = 0;
 unsigned long last_config_fetch = 0;
+String moduleToken = ""; // Variable globale pour stocker le token d'authentification du module, accessible dans tous les fichiers qui incluent LOGIN_Handling.h
 
 
 // ================== CAMERA ==================
@@ -96,11 +97,17 @@ if (getLocalTime(&timeinfo)) {
 } else {
     Serial.println("NTP pas dispo");
 } // fin test NTP
-
-    loginAPI();
+    moduleToken = loadToken(); // Charger le token depuis la mémoire flash au démarrage
+    if (moduleToken == "") {
+        Serial.println("Aucun token trouvé, fetchToken nécessaire");
+        fetchToken(WiFi.macAddress()); // On utilise l'adresse MAC comme identifiant unique du module pour récupérer le token correspondant à ce module dans l'API
+        Serial.println("Token récupéré et stocké : " + moduleToken);
+    } else {
+        Serial.println("Token trouvé en mémoire : " + moduleToken);
+    }
     delay(500);
-    lastLogin = millis();
     fetchConfig();
+    delay(500);
     startCamera();
     Serial.println("caméra démarée");
 
@@ -130,13 +137,6 @@ Serial.println("Caméra stabilisée");
 void loop() {
 
     esp_task_wdt_reset(); // reset le watchdog timer
-
-    // Login toutes les heures pour maintenir la session active et éviter les erreurs 401
-     if (millis() - lastLogin >= 3600000) {
-        lastLogin = millis();
-        loginAPI();
-        delay(500);
-    }
 
     // Fetch config toutes les 30s pour être sûr d'avoir la config à jour
     if (millis() - last_config_fetch >= 30000) {

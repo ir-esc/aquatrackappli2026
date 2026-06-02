@@ -3,8 +3,9 @@
 #include <WiFi.h>
 #include <ArduinoJson.h>
 #include "Wifi_handling.h"
+#include "Config_Fetcher.h"
+#include "LOGIN_Handling.h"
 
-const int aquariumId = 116; // ID de l'aquarium
 
 // ================== Création de l'observation ==================
 int createObservation() {
@@ -27,7 +28,7 @@ int createObservation() {
     client.println("POST /aqr/" + String(aquariumId) + "/obs HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
     client.println("Content-Type: application/json");
-    client.println("Cookie: " + sessionCookie);
+    client.println("Authorization: Bearer " + moduleToken);
     client.println("accept: application/json");
     client.println("Content-Length: " + String(body.length()));
     client.println();
@@ -94,7 +95,7 @@ void addMediaToObservation(int obsId, camera_fb_t* fb) {
     client.println("POST " + url + " HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
     client.println("Content-Type: multipart/form-data; boundary=" + boundary);
-    client.println("Cookie: " + sessionCookie);
+    client.println("Authorization: Bearer " + moduleToken);
     client.println("Content-Length: " + String(contentLength));
     client.println();
 

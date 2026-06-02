@@ -3,44 +3,69 @@
 #include <WiFi.h>
 #include <ArduinoJson.h>
 #include "Wifi_handling.h"
+#include <Preferences.h>
 
-void loginAPI() {
-    WiFiClient client; // On utilise WiFiClient directement pour mieux contrôler la requête et lire la réponse complète
+// Sauvegarder le token
+void saveToken(const String& token) {
+  Preferences prefs;
+  prefs.begin("aquatrack", false);  // namespace
+  prefs.putString("token", token);
+  prefs.end();
+}
+
+// Lire le token
+String loadToken() {
+  Preferences prefs;
+  prefs.begin("aquatrack", true);   // true = lecture seule
+  String token = prefs.getString("token", "");  // "" = valeur par défaut
+  prefs.end();
+  return token;
+}
+
+
+void fetchToken(String module_uid) {
+    WiFiClient client;
 
     if (!client.connect("192.168.63.44", 80)) {
-        Serial.println("Login: connexion échouée");
+        Serial.println("Token: connexion échouée");
         return;
     }
 
-    // Préparer le corps de la requête avec les identifiants, temporaire car il faudrait créer un utilisateur admin special esp32 dans l'API
-    String body = "{\"email\":\"Alex@ir.lan\",\"motdepasse\":\"Alex1234\"}";
-
-
-    client.println("POST /log HTTP/1.1");
+    String body = "{ \"module_uid\": \"" + String(module_uid) + "\" }";
+    client.println("POST /ass HTTP/1.1");
     client.println("Host: aquatrackapi.ir.lan");
     client.println("Content-Type: application/json");
-    client.println("accept: application/json");
     client.println("Content-Length: " + String(body.length()));
     client.println();
     client.print(body);
-
     String response = "";
     while (client.connected() || client.available()) {
         if (client.available()) {
             response += client.readString();
         }
     }
-
-     // extraire le cookie de session
-    int cookieStart = response.indexOf("ci_session=");
-    if (cookieStart != -1) {
-        int cookieEnd = response.indexOf(";", cookieStart);
-        sessionCookie = response.substring(cookieStart, cookieEnd);
-        Serial.println("Cookie stocké: " + sessionCookie);
-    } else {
-        Serial.println("Pas de cookie dans la réponse");
-    }
     client.stop();
+    Serial.println("Réponse /ass : " + response);
+     int jsonStart = response.indexOf('{');
+    if (jsonStart == -1) {
+        Serial.println("Pas de JSON dans la réponse");
+        return;
+    }
+    String json = response.substring(jsonStart);
 
-    Serial.println("Réponse login: " + response);
+    DynamicJsonDocument doc(1024);
+    if (deserializeJson(doc, json) != DeserializationError::Ok) {
+        Serial.println("Erreur parsing JSON");
+        return;
+    }
+
+    //Récupère le jeton 
+    if (doc.containsKey("jeton")) {
+        moduleToken = doc["jeton"].as<String>();
+        saveToken(moduleToken);
+        Serial.println("Token stocké : " + moduleToken);
+    } else {
+        Serial.println("Champ token introuvable dans la réponse");
+    }
 }
+

@@ -6,7 +6,6 @@ const char* ssid = "IRO";
 const char* password = "Cirrus=14014";
 
 String sessionCookie = "";
-
   
 void initWiFi() {
     WiFi.setHostname("esp32cam"); // optionnel, mais ça peut aider à identifier l'appareil dans le routeur ou les logs de l'API

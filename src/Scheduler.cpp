@@ -35,7 +35,9 @@ void Scheduler::parseConfig(String configStr) {
 bool Scheduler::doitPrendrePhoto() {
     struct tm timeinfo;
     if (!getLocalTime(&timeinfo)) return false;
-
+    if (timeinfo.tm_min != minute) {
+    derniere_minute = -1;
+    }
     bool ok = (timeinfo.tm_wday == jour)   &&
               (timeinfo.tm_hour == heure)  &&
               (timeinfo.tm_min  == minute) &&
