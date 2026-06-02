@@ -7,7 +7,7 @@ function getVueAquariums() {
       {
         view: "toolbar",
         elements: [
-          { view: "label",label: "Mes aquariums" },
+          { view: "label", label: "Mes aquariums" },
         ]
       },
       {
@@ -20,7 +20,7 @@ function getVueAquariums() {
               view: "datatable",
               id: "aquaTable",
               columns: [
-                { id: "media_id", header: "Image", width: 70, template: "<img src='//aquatrackapi.ir.lan/aqr/#media_id#' width='55' height='55'>" },
+                { id: "media_id", header: "Image", width: 70, template: "<img src='//aquatrackapi.ir.lan/med/#media_id#/fch' width='55' height='55'>" },
                 { id: "id", header: "Id", width: 50 },
                 { id: "nom", header: "Nom", fillspace: true },
                 { id: "user_id", header: "Propriétaire", width: 90 },
@@ -28,10 +28,7 @@ function getVueAquariums() {
                 { id: "volume", header: "Volume", width: 90 },
                 { id: "date", header: "Date de creation", width: 160 }
               ],
-              // récupère les données de l'API avec l'URL spécifiée
-              url: function (params) {
-                return webix.ajax("https://aquatrackapi.ir.lan/aqr");
-              },
+              url: "https://aquatrackapi.ir.lan/aqr",
               select: "row",
               scrollX: false
             },
