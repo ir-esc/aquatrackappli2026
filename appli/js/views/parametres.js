@@ -1,4 +1,5 @@
 // parametres.js - Vue des paramètres physico-chimiques
+
 function recupParametres() {
     // Récupère l'ID de l'aquarium
     var aquariumId = webix.storage.local.get("aquarium_id");
@@ -47,10 +48,6 @@ function formatValeur(value) {
 function getVueParametres() {
     return {
         id: "vue_parametres",
-        on: {
-                onAfterLoad: function () {
-            
-        }},
         rows: [
             {
                 // barre d'outils en haut de la page avec un bouton de retour et un menu

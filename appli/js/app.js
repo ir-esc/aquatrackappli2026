@@ -55,6 +55,7 @@ function afficherApp() {
                             { id: "observations", value: "Observations" },
                             { id: "modules", value: "Modules" },
                             { id: "photos", value: "Photos" },
+                            { id: "nourrissage", value: "Nourrissage" },
                             { id: "utilisateurs", value: "Utilisateurs" }
                         ],
                         on: {
@@ -73,6 +74,7 @@ function afficherApp() {
                             getVueObservations(),
                             getVueModules(),
                             getVuePhotos(),
+                            getVueNourrissage(),
                             getVueUtilisateurs()
                         ]
                     }
@@ -89,7 +91,7 @@ function afficherApp() {
 // Changer de vue dans la SPA
 function naviguer(vue) {
     $$("zone_principale").setValue("vue_" + vue);
-    $$("zone_principale").attachEvent("onViewChange", function(prevID, nextID){
+    $$("zone_principale").attachEvent("onViewChange", function (prevID, nextID) {
         if (nextID == "vue_parametres") {
             recupParametres();
         }
