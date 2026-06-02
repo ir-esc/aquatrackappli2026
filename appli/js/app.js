@@ -22,11 +22,14 @@ function afficherApp() {
                 css: { "background-color": "#0077b6" },
                 elements: [
                     {
-                        view: "label",
-                        label: "Aquatrack",
-                        css: { "color": "white", "font-size": "18px", "font-weight": "bold" }
+                        view: "button",
+                        value: "Retour",
+                        width: 100
                     },
-                    { view: "spacer" },
+                    {
+                        view: "label",
+                        label: "Aquatrack"
+                    },
                     {
                         view: "button",
                         value: "Déconnexion",
@@ -50,7 +53,6 @@ function afficherApp() {
                         width: 200,
                         select: true,
                         data: [
-                            { id: "aquariums", value: "Aquariums" },
                             { id: "parametres", value: "Paramètres" },
                             { id: "observations", value: "Observations" },
                             { id: "modules", value: "Modules" },
@@ -84,13 +86,17 @@ function afficherApp() {
     });
 
     // Sélection par défaut
-    $$("menu_lateral").select("aquariums");
     naviguer("aquariums");
 }
 
-// Changer de vue dans la SPA
+// Changement de vue dans l'appli
 function naviguer(vue) {
     $$("zone_principale").setValue("vue_" + vue);
+
+    if (vue == "aquariums") {
+        $$("menu_lateral").hide();
+    }
+
     $$("zone_principale").attachEvent("onViewChange", function (prevID, nextID) {
         if (nextID == "vue_parametres") {
             recupParametres();

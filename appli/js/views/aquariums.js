@@ -43,8 +43,10 @@ function getVueAquariums() {
             view: "button", value: "Voir", css: "webix_secondary", height: 50, click: function () {
               var selected = $$("aquaTable").getSelectedId(true).join();
               if (selected) {
-                //window.location.href = "../Mesures/mesures.html?id=" + selected;
                 webix.storage.local.put("aquarium_id", selected);
+                naviguer("parametres");
+                $$("menu_lateral").show();
+                $$("menu_lateral").select("parametres");
               }
               else {
                 webix.alert("Veuillez sélectionner un aquarium");
