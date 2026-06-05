@@ -1,4 +1,4 @@
-// nourrissage.js - Vue gestion du nourrissage
+// nourrissage.js - Vue/gestion du nourrissage
 
 function getVueNourrissage() {
     return {

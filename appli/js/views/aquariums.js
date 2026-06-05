@@ -1,4 +1,4 @@
-// aquariums.js - Vue gestion des aquariums
+// aquariums.js - Vue/gestion des aquariums
 
 function getVueAquariums() {
   return {

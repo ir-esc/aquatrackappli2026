@@ -1,4 +1,4 @@
-// FICHIER : login.js
+// login.js - Page de connexion
 
 webix.attachEvent("onAjaxError", function (mode, url, data, request) {
     request.withCredentials = true; // Assurer que les cookies sont envoyés pour les erreurs d'authentification

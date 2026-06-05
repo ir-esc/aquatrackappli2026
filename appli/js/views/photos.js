@@ -1,11 +1,14 @@
+// parametres.js - Vue/gestion des photosS
+
 function getVuePhotos() {
     return {
         id: "vue_photos",
         rows: [
+
             {
                 view: "toolbar",
                 elements: [
-                    { view: "label", label: "Photos - Aquarium #116" },
+                    { view: "label", label: "Photos - Aquarium " + webix.storage.local.get("aquarium_id") },
                     { view: "button", value: "Rafraichir", width: 110, click: chargerPhotos }
                 ]
             },
@@ -34,7 +37,7 @@ function chargerPhotos() {
     $$("zonePhotos").refresh();
 
     // GET /aqr/116/obs → retourne les observations avec media_id + date
-    fetch("https://aquatrackapi.ir.lan/aqr/116/obs", {
+    fetch("https://aquatrackapi.ir.lan/aqr/" + webix.storage.local.get("aquarium_id") + "/obs", {
         method: "GET",
         credentials: "include"
     })
@@ -90,3 +93,4 @@ function chargerPhotos() {
             $$("zonePhotos").refresh();
         });
 }
+

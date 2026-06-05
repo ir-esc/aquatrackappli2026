@@ -1,4 +1,4 @@
-// modules.js - Vue gestion des modules
+// modules.js - Vue/gestion des modules
 
 function getVueModules() {
   return {

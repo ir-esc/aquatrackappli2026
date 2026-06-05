@@ -1,4 +1,4 @@
-// parametres.js - Vue des paramètres physico-chimiques
+// parametres.js - Vue/gestion des paramètres physico-chimiques
 
 function recupParametres() {
     // Récupère l'ID de l'aquarium

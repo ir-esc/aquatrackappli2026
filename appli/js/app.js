@@ -63,11 +63,9 @@ function afficherApp() {
                         select: true,
                         data: [
                             { id: "parametres", value: "Paramètres" },
-                            { id: "observations", value: "Observations" },
                             { id: "modules", value: "Modules" },
                             { id: "photos", value: "Photos" },
                             { id: "nourrissage", value: "Nourrissage" },
-                            { id: "utilisateurs", value: "Utilisateurs" }
                         ],
                         on: {
                             onAfterSelect: function (id) {
@@ -82,11 +80,9 @@ function afficherApp() {
                         cells: [// Les différentes vues de l'application
                             getVueAquariums(),
                             getVueParametres(),
-                            getVueObservations(),
                             getVueModules(),
                             getVuePhotos(),
                             getVueNourrissage(),
-                            getVueUtilisateurs()
                         ]
                     }
                 ]
