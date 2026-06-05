@@ -86,12 +86,6 @@ function afficherLogin() {
                 { height: 20 },
                 {
                     view: "button",
-                    value: "Mot de passe oublié ?",
-                    css: "webix_transparent",
-                    click: function () { afficherFormulaireMotDePasseOublie(); }
-                },
-                {
-                    view: "button",
                     value: "Créer un compte",
                     click: function () { afficherFormulaireInscription(); }
                 }
@@ -122,66 +116,6 @@ function apiLogin(email, motdepasse, callback) {
         });
 }
 
-
-// ─── Mot de passe oublié ──────────────────────────────────────────────────────
-function afficherFormulaireMotDePasseOublie() {
-    webix.ui({
-        view: "window",
-        id: "fenetre_mdp_oublie",
-        head: "Mot de passe oublié",
-        modal: true,
-        position: "center",
-        width: 350,
-        body: {
-            view: "form",
-            id: "form_mdp_oublie",
-            elements: [
-                {
-                    view: "text",
-                    id: "email_mdp_oublie",
-                    label: "Entrez votre email pour recevoir un lien de réinitialisation",
-                    labelPosition: "top"
-                },
-                {
-                    cols: [
-                        {
-                            view: "button",
-                            value: "Annuler",
-                            click: function () { $$("fenetre_mdp_oublie").close(); }
-                        },
-                        {
-                            view: "button",
-                            value: "Envoyer",
-                            css: "webix_primary",
-                            click: function () {
-                                var email = $$("email_mdp_oublie").getValue();
-
-                                if (!email) {
-                                    webix.message({ type: "error", text: "Veuillez entrer votre email !" });
-                                    return;
-                                }
-
-                                fetch(API_BASE + "/auth/mot-de-passe-oublie", {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ email: email })
-                                })
-                                    .then(function (response) { return response.json(); })
-                                    .then(function (reponse) {
-                                        webix.message({ type: "success", text: reponse.message || "Email de réinitialisation envoyé !" });
-                                        $$("fenetre_mdp_oublie").close();
-                                    })
-                                    .catch(function (err) {
-                                        webix.message({ type: "error", text: "Erreur réseau : " + err.message });
-                                    });
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    }).show();
-}
 
 // ─── Inscription ──────────────────────────────────────────────────────────────
 function afficherFormulaireInscription() {
