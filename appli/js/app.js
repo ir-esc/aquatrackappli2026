@@ -19,7 +19,7 @@ function afficherApp() {
             {
                 view: "toolbar",
                 height: 50,
-                css: { "background-color": "#0077b6" },
+                css: { "background-color": "#badeff" },
                 elements: [
                     {
                         view: "button",
