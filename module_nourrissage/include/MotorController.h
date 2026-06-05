@@ -16,7 +16,7 @@ private:
     unsigned long temps_cycle = 0;
 
     int derniereHeure = -1;
-    int derniereMinute = -1;
+    int dernierJour = -1;
 
 public:
     MotorController(int ena, int in1, int in2, int contacteur);

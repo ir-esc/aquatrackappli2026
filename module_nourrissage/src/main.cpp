@@ -43,7 +43,7 @@ void setup() {
 }
 
 void loop() {
-    if (millis() - dernierRefresh > 15000) {
+    if (millis() - dernierRefresh > 60000) {
         config.getConfigModule(auth.getToken());
         dernierRefresh = millis();
     }

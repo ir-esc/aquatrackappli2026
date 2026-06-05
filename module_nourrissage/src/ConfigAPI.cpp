@@ -76,7 +76,7 @@ void ConfigAPI::getConfigModule(String token) {
 
         Serial.print("Intervalle : ");
         Serial.print(intervalle);
-        Serial.println(" secondes");
+        Serial.println("h");
     }
 
     // mode horaire
@@ -91,8 +91,11 @@ void ConfigAPI::getConfigModule(String token) {
             if (nbHoraires >= MAX_HORAIRES)
                 break;
 
+            horaires[nbHoraires].jour = h["jour"];
+			if (horaires[nbHoraires].jour == 7) {
+				horaires[nbHoraires].jour = 0;
+			}
             horaires[nbHoraires].heure = h["heure"];
-            horaires[nbHoraires].minute = h["minute"];
 
             nbHoraires++;
         }
@@ -103,15 +106,11 @@ void ConfigAPI::getConfigModule(String token) {
 
         for (int i = 0; i < nbHoraires; i++) {
 
-            Serial.print("Horaire : ");
+			Serial.print("Jour : ");
+            Serial.println(horaires[i].jour);
 
-            Serial.print(horaires[i].heure);
-            Serial.print("h");
-
-            if (horaires[i].minute < 10)
-                Serial.print("0");
-
-            Serial.println(horaires[i].minute);
+			Serial.print("Heure : ");
+            Serial.println(horaires[i].heure);
         }
     }
 

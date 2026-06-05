@@ -7,7 +7,7 @@ const int MAX_HORAIRES = 20;
 
 struct Horaire {
     int heure;
-    int minute;
+    int jour;
 };
 
 class ConfigAPI {

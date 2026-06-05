@@ -20,11 +20,11 @@ void MotorController::begin()
 
 void MotorController::update(struct tm* timeinfo, ConfigAPI& config)
 {
-    // moteur arrÃªtÃ©
+    // moteur arrêté
     if (etat_moteur == 2) {
         // mode intervalle
         if (config.isModeIntervalle()) {
-            if (millis() - temps_cycle >= config.getIntervalle() * 1000) {
+            if (millis() - temps_cycle >= config.getIntervalle() * 3600000UL) { //conversion en heure
                 digitalWrite(ENA, HIGH);
                 digitalWrite(IN1, LOW);
                 digitalWrite(IN2, HIGH);
@@ -36,15 +36,16 @@ void MotorController::update(struct tm* timeinfo, ConfigAPI& config)
         if (config.isModeHoraires()) {
             Horaire* horaires = config.getHoraires();
             for (int i = 0; i < config.getNbHoraires(); i++) {
-                bool deja_declenche = timeinfo->tm_hour == derniereHeure && timeinfo->tm_min == derniereMinute;
-                if (timeinfo->tm_hour == horaires[i].heure && timeinfo->tm_min == horaires[i].minute && !deja_declenche) {
+                bool deja_declenche = timeinfo->tm_wday == dernierJour && timeinfo->tm_hour == derniereHeure;
+                if (timeinfo->tm_wday == horaires[i].jour && timeinfo->tm_hour == horaires[i].heure && !deja_declenche) {
                     digitalWrite(ENA, HIGH);
                     digitalWrite(IN1, LOW);
                     digitalWrite(IN2, HIGH);
                     etat_moteur = 1;
 
+                    // mémorisation du dernier nourrissage
                     derniereHeure = timeinfo->tm_hour;
-                    derniereMinute = timeinfo->tm_min;
+                    dernierJour = timeinfo->tm_wday;
                 }
             }
         }
