@@ -45,6 +45,8 @@ function getVueAquariums() {
               if (selected) {
                 webix.storage.local.put("aquarium_id", selected);
                 naviguer("parametres");
+                recupParametres();
+                $$("retour").show();
                 $$("menu_lateral").show();
                 $$("menu_lateral").select("parametres");
               }

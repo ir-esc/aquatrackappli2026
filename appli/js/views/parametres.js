@@ -20,22 +20,22 @@ function recupParametres() {
         const conductiviteItems = filteredItems.filter(function (item) { return item.type_id == 8; });
 
         // met les données dans les graphiques correspondants (parse) et les trie par date dans l'ordre croissant (sort)
-        $$('Température_chart').parse(temperatureItems);
-        $$('Température_chart').sort('#date#', 'asc');
-        $$('Acidité_chart').parse(aciditeItems);
-        $$('Acidité_chart').sort('#date#', 'asc');
-        $$('Dureté carbonatée_chart').parse(dureteCarbonateeItems);
-        $$('Dureté carbonatée_chart').sort('#date#', 'asc');
-        $$('Dureté totale_chart').parse(dureteTotaleItems);
-        $$('Dureté totale_chart').sort('#date#', 'asc');
-        $$('Concentration en nitrites_chart').parse(nitritesItems);
-        $$('Concentration en nitrites_chart').sort('#date#', 'asc');
-        $$('Concentration en nitrates_chart').parse(nitratesItems);
-        $$('Concentration en nitrates_chart').sort('#date#', 'asc');
-        $$('Concentration en ammoniac_chart').parse(ammoniacItems);
-        $$('Concentration en ammoniac_chart').sort('#date#', 'asc');
-        $$('Conductivité_chart').parse(conductiviteItems);
-        $$('Conductivité_chart').sort('#date#', 'asc');
+        $$("Température_chart").parse(temperatureItems);
+        $$("Température_chart").sort("#date#", "asc");
+        $$("Acidité_chart").parse(aciditeItems);
+        $$("Acidité_chart").sort("#date#", "asc");
+        $$("Dureté carbonatée_chart").parse(dureteCarbonateeItems);
+        $$("Dureté carbonatée_chart").sort("#date#", "asc");
+        $$("Dureté totale_chart").parse(dureteTotaleItems);
+        $$("Dureté totale_chart").sort("#date#", "asc");
+        $$("Concentration en nitrites_chart").parse(nitritesItems);
+        $$("Concentration en nitrites_chart").sort("#date#", "asc");
+        $$("Concentration en nitrates_chart").parse(nitratesItems);
+        $$("Concentration en nitrates_chart").sort("#date#", "asc");
+        $$("Concentration en ammoniac_chart").parse(ammoniacItems);
+        $$("Concentration en ammoniac_chart").sort("#date#", "asc");
+        $$("Conductivité_chart").parse(conductiviteItems);
+        $$("Conductivité_chart").sort("#date#", "asc");
     });
 }
 

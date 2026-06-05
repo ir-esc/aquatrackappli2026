@@ -22,9 +22,16 @@ function afficherApp() {
                 css: { "background-color": "#badeff" },
                 elements: [
                     {
+                        // Retour sur la vue des aquariums et supprime le stockage local
                         view: "button",
-                        value: "Retour",
-                        width: 100
+                        id: "retour",
+                        type: "icon",
+                        icon: "mdi mdi-arrow-left",
+                        width: 50,
+                        click: function () {
+                            webix.storage.local.clear();
+                            naviguer("aquariums");
+                        }
                     },
                     {
                         view: "label",
@@ -39,6 +46,7 @@ function afficherApp() {
                         click: function () {
                             supprimerSession();
                             $$("app_principal").destructor();
+                            webix.storage.local.clear();
                             afficherLogin();
                         }
                     }
@@ -96,13 +104,8 @@ function naviguer(vue) {
 
     if (vue == "aquariums") {
         $$("menu_lateral").hide();
+        $$("retour").hide();
     }
-
-    $$("zone_principale").attachEvent("onViewChange", function (prevID, nextID) {
-        if (nextID == "vue_parametres") {
-            recupParametres();
-        }
-    });
 }
 
 // Démarrage de l'application
@@ -111,6 +114,7 @@ webix.ready(function () {
     if (getSession() || localStorage.getItem("user_id")) {
         afficherApp();
     } else {
+        webix.storage.local.clear();
         afficherLogin();
     }
 });
