@@ -70,7 +70,7 @@ function getVueAquariums() {
 
             }
           },
-          // bouton pour supprimer (fonctionne pas)
+          // bouton pour supprimer (rafraichir pour voir resultat)
           {
             view: "button", value: "Supprimer", css: "webix_danger", height: 50, click: function () {
               var selected = $$("aquaTable").getSelectedId(true).join();
@@ -79,7 +79,11 @@ function getVueAquariums() {
                   text: "Voulez vous vraiment supprimer cet aquarium ? : " + selected,
                   ok: "Oui",
                   cancel: "Non"
-                });
+                })
+                  .then(function () {
+                    webix.ajax()
+                      .del("https://aquatrackapi.ir.lan/aqr/" + selected );
+                  })
               }
               else {
                 webix.alert("Veuillez sélectionner un aquarium ");
