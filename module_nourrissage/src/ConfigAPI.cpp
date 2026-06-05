@@ -1,18 +1,9 @@
 #include "ConfigAPI.h"
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include <AuthAPI.h>
+#include "AuthAPI.h"
 
-Horaire horaires[MAX_HORAIRES];
-
-int nbHoraires = 0;
-
-int intervalle = 0;
-
-bool modeIntervalle = false;
-bool modeHoraires = false;
-
-void getConfigModule() {
+void ConfigAPI::getConfigModule(String token) {
 
     HTTPClient http;
 
@@ -20,7 +11,7 @@ void getConfigModule() {
 
     http.begin(url);
 
-    http.addHeader("Authorization", "Bearer " + moduleToken);
+    http.addHeader("Authorization", "Bearer " + token);
 
     int httpCode = http.GET();
 
@@ -123,4 +114,31 @@ void getConfigModule() {
             Serial.println(horaires[i].minute);
         }
     }
+
+// Getters
+bool ConfigAPI::isModeIntervalle()
+{
+    return modeIntervalle;
+}
+
+bool ConfigAPI::isModeHoraires()
+{
+    return modeHoraires;
+}
+
+int ConfigAPI::getIntervalle()
+{
+    return intervalle;
+}
+
+Horaire* ConfigAPI::getHoraires()
+{
+    return horaires;
+}
+
+int ConfigAPI::getNbHoraires()
+{
+    return nbHoraires;
+}
+
 }

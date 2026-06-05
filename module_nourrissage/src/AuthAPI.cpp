@@ -3,10 +3,12 @@
 #include "AuthAPI.h"
 #include <Preferences.h>
 
-String moduleToken = "";
+String AuthAPI::getToken() {
+    return moduleToken;
+}
 
 // Sauvegarde du jeton
-void saveToken(const String& token) {
+void AuthAPI::saveToken(const String& token) {
   Preferences prefs;
   prefs.begin("aquatrack", false);
   prefs.putString("token", token);
@@ -14,15 +16,15 @@ void saveToken(const String& token) {
 }
 
 // Lecture du jeton
-String loadToken() {
+String AuthAPI::loadToken() {
   Preferences prefs;
   prefs.begin("aquatrack", true);
-  String token = prefs.getString("token", "");
+  moduleToken = prefs.getString("token", "");
   prefs.end();
-  return token;
+  return moduleToken;
 }
 
-void fetchToken(String module_uid) {
+void AuthAPI::fetchToken(String module_uid) {
     HTTPClient http;
 
     String url = "http://aquatrackapi.ir.lan/ass";
@@ -64,7 +66,7 @@ void fetchToken(String module_uid) {
     if (doc["jeton"]) {
         moduleToken = doc["jeton"].as<String>();
         saveToken(moduleToken);
-        Serial.println("Jeton sauvegardÃ© : " + moduleToken);
+        Serial.println("Jeton sauvegardé : " + moduleToken);
     } else {
         Serial.println("Champ jeton absent");
     }

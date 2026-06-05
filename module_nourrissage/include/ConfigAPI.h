@@ -10,14 +10,21 @@ struct Horaire {
     int minute;
 };
 
-extern Horaire horaires[MAX_HORAIRES];
-extern int nbHoraires;
+class ConfigAPI {
+private:
+    Horaire horaires[MAX_HORAIRES];
+    int nbHoraires = 0;
+    int intervalle = 0;
+    bool modeIntervalle = false;
+    bool modeHoraires = false;
 
-extern int intervalle;
-
-extern bool modeIntervalle;
-extern bool modeHoraires;
-
-void getConfigModule();
+public:
+    void getConfigModule(String token);
+    bool isModeIntervalle();
+    bool isModeHoraires();
+    int getIntervalle();
+    Horaire* getHoraires();
+    int getNbHoraires();
+};
 
 #endif

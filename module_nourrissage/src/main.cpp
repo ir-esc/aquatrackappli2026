@@ -6,21 +6,17 @@
 #include "WifiManager.h"
 #include "AuthAPI.h"
 #include "ConfigAPI.h"
+#include "MotorController.h"
 
-int ENA = 25;
-int IN1 = 26;
-int IN2 = 27;
-int CONTACTEUR = 13;
+MotorController moteur(25, 26, 27, 13);
 
-int etat_moteur = 2;
+WifiManager wifi;
 
-unsigned long temps_rebond = 0;
-unsigned long temps_cycle = 0;
+AuthAPI auth;
+
+ConfigAPI config;
+
 unsigned long dernierRefresh = 0;
-
-// mémorisation du dernier nourrissage
-int derniereHeure = -1;
-int derniereMinute = -1;
 
 const char* ntpServer = "pool.ntp.org";
 
@@ -29,30 +25,26 @@ const int daylightOffset_sec = 3600 * 1;
 
 void setup() {
     Serial.begin(115200);
-    pinMode(IN1, OUTPUT);
-    pinMode(IN2, OUTPUT);
-    pinMode(ENA, OUTPUT);
-    pinMode(CONTACTEUR, INPUT_PULLUP);
+    moteur.begin();
 
-    connexionWifi(ssid, password);
+    wifi.connexionWifi(ssid, password);
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
-	moduleToken = loadToken(); // Chargement du jeton depuis la mémoire flash au démarrage
-    if (moduleToken == "") {
-        Serial.println("Aucun jeton trouvé, fetchToken nécessaire");
-        fetchToken(WiFi.macAddress());
-        Serial.println("Jeton récupéré et stocké : " + moduleToken);
+    String token = auth.loadToken(); // Chargement du jeton depuis la mémoire flash au démarrage
+    if (token == "") {
+        Serial.println("Aucun token trouvé, fetchToken nécessaire");
+        auth.fetchToken(WiFi.macAddress());
+        Serial.println("Token récupéré et stocké : " + token);
     } else {
-        Serial.println("Jeton trouvé en mémoire : " + moduleToken);
+        Serial.println("Token trouvé en mémoire : " + token);
     }
 
-    getConfigModule();
+    config.getConfigModule(auth.getToken());
 }
 
 void loop() {
-    // rafraîchissement toutes les 30 secondes
-    if (millis() - dernierRefresh > 30000) {
-        getHoraires();
+    if (millis() - dernierRefresh > 15000) {
+        config.getConfigModule(auth.getToken());
         dernierRefresh = millis();
     }
 
@@ -63,66 +55,7 @@ void loop() {
         return;
     }
 
-    // moteur arrêté
-    if (etat_moteur == 2) {
-        // mode intervalle
-        if (modeIntervalle) {
-            if (millis() - temps_cycle >= intervalle * 1000) {
-                digitalWrite(ENA, HIGH);
-                digitalWrite(IN1, LOW);
-                digitalWrite(IN2, HIGH);
-                etat_moteur = 1;
-            }
-        }
-        // mode horaire
-        if (modeHoraires) {
-            for (int i = 0; i < nbHoraires; i++) {
-                bool deja_declenche = timeinfo.tm_hour == derniereHeure && timeinfo.tm_min == derniereMinute;
-                if (timeinfo.tm_hour == horaires[i].heure && timeinfo.tm_min == horaires[i].minute && !deja_declenche) {
-                    digitalWrite(ENA, HIGH);
-                    digitalWrite(IN1, LOW);
-                    digitalWrite(IN2, HIGH);
-                    etat_moteur = 1;
-
-                    // mémorisation du dernier nourrissage
-                    derniereHeure = timeinfo.tm_hour;
-                    derniereMinute = timeinfo.tm_min;
-                }
-            }
-        }
-    }
-
-    // moteur en rotation
-    if (etat_moteur == 1) {
-        if (digitalRead(CONTACTEUR) == LOW) {
-            etat_moteur = 0;
-        }
-    }
-
-    // quitter contacteur
-    if (etat_moteur == 0) {
-        if (digitalRead(CONTACTEUR) == HIGH) {
-			temps_rebond = millis();
-            etat_moteur = 3;
-        }
-    }
-
-    // anti rebond
-    if (etat_moteur == 3) {
-        if (millis() - temps_rebond > 30) {
-            if (digitalRead(CONTACTEUR) == HIGH) {
-                digitalWrite(IN1, LOW);
-                digitalWrite(IN2, LOW);
-                digitalWrite(ENA, LOW);
-                temps_cycle = millis();
-
-                etat_moteur = 2;
-            }
-            else {
-                etat_moteur = 0;
-            }
-        }
-    }
+    moteur.update(&timeinfo, config);
 
     delay(10);
 }

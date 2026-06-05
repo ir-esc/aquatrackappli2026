@@ -3,6 +3,9 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
-void connexionWifi(const char* ssid, const char* password);
+class WifiManager {
+public :
+    void connexionWifi(const char* ssid, const char* password);
+};
 
 #endif

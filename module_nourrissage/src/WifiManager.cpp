@@ -2,7 +2,7 @@
 #include "WifiManager.h"
 #include <Arduino.h>
 
-void connexionWifi(const char* ssid, const char* password) {
+void WifiManager::connexionWifi(const char* ssid, const char* password) {
     WiFi.begin(ssid, password);
 
     Serial.println("\nConnecting");
